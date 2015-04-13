@@ -1,5 +1,6 @@
 package com.example.hannes.neverlate;
 
+import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -61,5 +62,7 @@ public class MapsActivity extends FragmentActivity {
      */
     private void setUpMap() {
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        //GPSTracker tracker = new GPSTracker(this);
+        //System.out.println("longitude: "+ tracker.getLongitude() + "latitude: " + tracker.getLatitude());
     }
 }
