@@ -1,11 +1,15 @@
 package com.example.hannes.neverlate;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -61,8 +65,17 @@ public class MapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
-        //GPSTracker tracker = new GPSTracker(this);
-        //System.out.println("longitude: "+ tracker.getLongitude() + "latitude: " + tracker.getLatitude());
+        GPSTracker tracker = new GPSTracker(MapsActivity.this);
+        double latitude = tracker.getLatitude();
+        double longitude = tracker.getLongitude();
+        TextView tv = (TextView) findViewById(R.id.gpsView);
+        tv.setText(latitude + " , " + longitude);
+       // mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude )).title("Marker"));
+       /* Circle circle = mMap.addCircle(new CircleOptions()
+                .center(new LatLng(latitude, longitude))
+                .radius(10000)
+                .strokeColor(Color.RED)
+                .fillColor(Color.BLUE));*/
+        mMap.setMyLocationEnabled(true);
     }
 }
