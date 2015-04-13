@@ -2,10 +2,12 @@ package com.example.hannes.neverlate;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Circle;
@@ -64,18 +66,48 @@ public class MapsActivity extends FragmentActivity {
      * <p/>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
+    private GoogleMap.OnMyLocationChangeListener myLocationChangeListener = new GoogleMap.OnMyLocationChangeListener() {
+        @Override
+        public void onMyLocationChange(Location location) {
+            LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+            TextView tv = (TextView) findViewById(R.id.gpsView);
+            tv.setText(loc.latitude + " , " + loc.longitude);
+            // mMarker = mMap.addMarker(new MarkerOptions().position(loc));
+            if(mMap != null){
+                float zoom = mMap.getCameraPosition().zoom;
+                if(zoom < 10.0f) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+                }
+            }
+        }
+    };
+    private GoogleMap.OnMapLongClickListener myLongClickListener = new GoogleMap.OnMapLongClickListener(){
+
+        @Override
+        public void onMapLongClick(LatLng latLng) {
+            mMap.clear();
+            mMap.addMarker(new MarkerOptions().position(latLng));
+        }
+    };
     private void setUpMap() {
+        mMap.setMyLocationEnabled(true);
+        mMap.setOnMyLocationChangeListener(myLocationChangeListener);
+        mMap.setOnMapLongClickListener(myLongClickListener);
+
+    }
+
+  /*  private void oldSetUpMap{
         GPSTracker tracker = new GPSTracker(MapsActivity.this);
         double latitude = tracker.getLatitude();
         double longitude = tracker.getLongitude();
         TextView tv = (TextView) findViewById(R.id.gpsView);
         tv.setText(latitude + " , " + longitude);
-       // mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude )).title("Marker"));
-       /* Circle circle = mMap.addCircle(new CircleOptions()
+        // mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude )).title("Marker"));
+       *//* Circle circle = mMap.addCircle(new CircleOptions()
                 .center(new LatLng(latitude, longitude))
                 .radius(10000)
                 .strokeColor(Color.RED)
-                .fillColor(Color.BLUE));*/
+                .fillColor(Color.BLUE));*//*
         mMap.setMyLocationEnabled(true);
-    }
+    }*/
 }

@@ -18,7 +18,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text="LatLng shown here when obtained"
         android:id="@+id/gpsView"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
