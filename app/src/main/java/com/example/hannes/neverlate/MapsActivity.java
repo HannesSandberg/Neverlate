@@ -14,10 +14,20 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import org.w3c.dom.Document;
+
+import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private LatLng markerLocation = null;
+    private LatLng gpsLocation = null;
+    private TextView gpsLocationText = null;
+    private TextView markerLocationText = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +80,9 @@ public class MapsActivity extends FragmentActivity {
         @Override
         public void onMyLocationChange(Location location) {
             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-            TextView tv = (TextView) findViewById(R.id.gpsView);
-            tv.setText(loc.latitude + " , " + loc.longitude);
-            // mMarker = mMap.addMarker(new MarkerOptions().position(loc));
+            gpsLocationText = (TextView) findViewById(R.id.gpsView);
+            gpsLocationText.setText("GPS coord: " + loc.latitude + " , " + loc.longitude);
+            gpsLocation = loc;
             if(mMap != null){
                 float zoom = mMap.getCameraPosition().zoom;
                 if(zoom < 10.0f) {
@@ -82,11 +92,15 @@ public class MapsActivity extends FragmentActivity {
         }
     };
     private GoogleMap.OnMapLongClickListener myLongClickListener = new GoogleMap.OnMapLongClickListener(){
-
         @Override
         public void onMapLongClick(LatLng latLng) {
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(latLng));
+            markerLocation = latLng;
+            markerLocationText = (TextView) findViewById(R.id.markerView);
+            markerLocationText.setText("Marker coord: " + latLng.latitude + " , " + latLng.longitude);
+            RoutePlanner routePlanner = new RoutePlanner(gpsLocation, markerLocation, RoutePlanner.MODE_WALKING);
+            drawRoute(routePlanner);
         }
     };
     private void setUpMap() {
@@ -94,6 +108,22 @@ public class MapsActivity extends FragmentActivity {
         mMap.setOnMyLocationChangeListener(myLocationChangeListener);
         mMap.setOnMapLongClickListener(myLongClickListener);
 
+    }
+
+    private void drawRoute(RoutePlanner routePlanner){
+        Document doc = routePlanner.getDocument();
+
+        if(doc==null) {
+            System.out.println("Doc null");
+        }
+        ArrayList<LatLng> directionPoint = routePlanner.getDirection(doc);
+        PolylineOptions rectLine = new PolylineOptions().width(3).color(
+                Color.RED);
+
+        for (int i = 0; i < directionPoint.size(); i++) {
+            rectLine.add(directionPoint.get(i));
+        }
+        Polyline polylin = mMap.addPolyline(rectLine);
     }
 
   /*  private void oldSetUpMap{
