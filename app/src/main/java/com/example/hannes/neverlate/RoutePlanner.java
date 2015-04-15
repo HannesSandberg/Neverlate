@@ -43,10 +43,7 @@ public class RoutePlanner {
                 + "&destination=" + end.latitude + "," + end.longitude
                 + "&sensor=false&units=metric&mode="+mode;
 
-        System.out.println("\n");
-        System.out.println(url);
-        System.out.println("\n");
-
+        Log.d("GoogleMapsDirection", url);
         try {
             HttpClient httpClient = new DefaultHttpClient();
             HttpContext localContext = new BasicHttpContext();
@@ -62,124 +59,64 @@ public class RoutePlanner {
         return null;
     }
 
-    public String getDurationText(Document doc) {
-        try {
-
-            NodeList nl1 = doc.getElementsByTagName("duration");
-            Node node1 = nl1.item(0);
-            NodeList nl2 = node1.getChildNodes();
-            Node node2 = nl2.item(getNodeIndex(nl2, "text"));
-            Log.i("DurationText", node2.getTextContent());
-            return node2.getTextContent();
-        } catch (Exception e) {
-            return "0";
-        }
+    public String getDurationText (Document doc) {
+        NodeList nl1 = doc.getElementsByTagName("duration");
+        Node node1 = nl1.item(nl1.getLength() - 1);
+        NodeList nl2 = node1.getChildNodes();
+        Node node2 = nl2.item(getNodeIndex(nl2, "text"));
+        Log.i("DurationText", node2.getTextContent());
+        return node2.getTextContent();
     }
 
-    public int getDurationValue(Document doc) {
-        try {
-            NodeList nl1 = doc.getElementsByTagName("duration");
-            Node node1 = nl1.item(0);
-            NodeList nl2 = node1.getChildNodes();
-            Node node2 = nl2.item(getNodeIndex(nl2, "value"));
-            Log.i("DurationValue", node2.getTextContent());
-            return Integer.parseInt(node2.getTextContent());
-        } catch (Exception e) {
-            return -1;
-        }
+    public int getDurationValue (Document doc) {
+        NodeList nl1 = doc.getElementsByTagName("duration");
+        Node node1 = nl1.item(nl1.getLength() - 1);
+        NodeList nl2 = node1.getChildNodes();
+        Node node2 = nl2.item(getNodeIndex(nl2, "value"));
+        Log.i("DurationValue", node2.getTextContent());
+        return Integer.parseInt(node2.getTextContent());
     }
 
-    public String getDistanceText(Document doc) {
-    /*
-     * while (en.hasMoreElements()) { type type = (type) en.nextElement();
-     *
-     * }
-     */
-
-        try {
-            NodeList nl1;
-            nl1 = doc.getElementsByTagName("distance");
-
-            Node node1 = nl1.item(nl1.getLength() - 1);
-            NodeList nl2 = null;
-            nl2 = node1.getChildNodes();
-            Node node2 = nl2.item(getNodeIndex(nl2, "value"));
-            Log.d("DistanceText", node2.getTextContent());
-            return node2.getTextContent();
-        } catch (Exception e) {
-            return "-1";
-        }
-
-    /*
-     * NodeList nl1; if(doc.getElementsByTagName("distance")!=null){ nl1=
-     * doc.getElementsByTagName("distance");
-     *
-     * Node node1 = nl1.item(nl1.getLength() - 1); NodeList nl2 = null; if
-     * (node1.getChildNodes() != null) { nl2 = node1.getChildNodes(); Node
-     * node2 = nl2.item(getNodeIndex(nl2, "value")); Log.d("DistanceText",
-     * node2.getTextContent()); return node2.getTextContent(); } else return
-     * "-1";} else return "-1";
-     */
+    public String getDistanceText (Document doc) {
+        NodeList nl1 = doc.getElementsByTagName("distance");
+        Node node1 = nl1.item(nl1.getLength() - 1);
+        NodeList nl2 = node1.getChildNodes();
+        Node node2 = nl2.item(getNodeIndex(nl2, "text"));
+        Log.i("DistanceText", node2.getTextContent());
+        return node2.getTextContent();
     }
 
-    public int getDistanceValue(Document doc) {
-        try {
-            NodeList nl1 = doc.getElementsByTagName("distance");
-            Node node1 = null;
-            node1 = nl1.item(nl1.getLength() - 1);
-            NodeList nl2 = node1.getChildNodes();
-            Node node2 = nl2.item(getNodeIndex(nl2, "value"));
-            Log.i("DistanceValue", node2.getTextContent());
-            return Integer.parseInt(node2.getTextContent());
-        } catch (Exception e) {
-            return -1;
-        }
-    /*
-     * NodeList nl1 = doc.getElementsByTagName("distance"); Node node1 =
-     * null; if (nl1.getLength() > 0) node1 = nl1.item(nl1.getLength() - 1);
-     * if (node1 != null) { NodeList nl2 = node1.getChildNodes(); Node node2
-     * = nl2.item(getNodeIndex(nl2, "value")); Log.i("DistanceValue",
-     * node2.getTextContent()); return
-     * Integer.parseInt(node2.getTextContent()); } else return 0;
-     */
+    public int getDistanceValue (Document doc) {
+        NodeList nl1 = doc.getElementsByTagName("distance");
+        Node node1 = nl1.item(nl1.getLength() - 1);
+        NodeList nl2 = node1.getChildNodes();
+        Node node2 = nl2.item(getNodeIndex(nl2, "value"));
+        Log.i("DistanceValue", node2.getTextContent());
+        return Integer.parseInt(node2.getTextContent());
     }
 
-    public String getStartAddress(Document doc) {
-        try {
-            NodeList nl1 = doc.getElementsByTagName("start_address");
-            Node node1 = nl1.item(0);
-            Log.i("StartAddress", node1.getTextContent());
-            return node1.getTextContent();
-        } catch (Exception e) {
-            return "-1";
-        }
-
+    public String getStartAddress (Document doc) {
+        NodeList nl1 = doc.getElementsByTagName("start_address");
+        Node node1 = nl1.item(0);
+        Log.i("StartAddress", node1.getTextContent());
+        return node1.getTextContent();
     }
 
-    public String getEndAddress(Document doc) {
-        try {
-            NodeList nl1 = doc.getElementsByTagName("end_address");
-            Node node1 = nl1.item(0);
-            Log.i("StartAddress", node1.getTextContent());
-            return node1.getTextContent();
-        } catch (Exception e) {
-            return "-1";
-        }
+    public String getEndAddress (Document doc) {
+        NodeList nl1 = doc.getElementsByTagName("end_address");
+        Node node1 = nl1.item(0);
+        Log.i("StartAddress", node1.getTextContent());
+        return node1.getTextContent();
     }
 
-    public String getCopyRights(Document doc) {
-        try {
-            NodeList nl1 = doc.getElementsByTagName("copyrights");
-            Node node1 = nl1.item(0);
-            Log.i("CopyRights", node1.getTextContent());
-            return node1.getTextContent();
-        } catch (Exception e) {
-            return "-1";
-        }
-
+    public String getCopyRights (Document doc) {
+        NodeList nl1 = doc.getElementsByTagName("copyrights");
+        Node node1 = nl1.item(0);
+        Log.i("CopyRights", node1.getTextContent());
+        return node1.getTextContent();
     }
 
-    public ArrayList<LatLng> getDirection(Document doc) {
+    public ArrayList<LatLng> getDirection (Document doc) {
         NodeList nl1, nl2, nl3;
         ArrayList<LatLng> listGeopoints = new ArrayList<LatLng>();
         nl1 = doc.getElementsByTagName("step");
@@ -188,8 +125,7 @@ public class RoutePlanner {
                 Node node1 = nl1.item(i);
                 nl2 = node1.getChildNodes();
 
-                Node locationNode = nl2
-                        .item(getNodeIndex(nl2, "start_location"));
+                Node locationNode = nl2.item(getNodeIndex(nl2, "start_location"));
                 nl3 = locationNode.getChildNodes();
                 Node latNode = nl3.item(getNodeIndex(nl3, "lat"));
                 double lat = Double.parseDouble(latNode.getTextContent());
@@ -201,9 +137,8 @@ public class RoutePlanner {
                 nl3 = locationNode.getChildNodes();
                 latNode = nl3.item(getNodeIndex(nl3, "points"));
                 ArrayList<LatLng> arr = decodePoly(latNode.getTextContent());
-                for (int j = 0; j < arr.size(); j++) {
-                    listGeopoints.add(new LatLng(arr.get(j).latitude, arr
-                            .get(j).longitude));
+                for(int j = 0 ; j < arr.size() ; j++) {
+                    listGeopoints.add(new LatLng(arr.get(j).latitude, arr.get(j).longitude));
                 }
 
                 locationNode = nl2.item(getNodeIndex(nl2, "end_location"));
@@ -220,8 +155,8 @@ public class RoutePlanner {
     }
 
     private int getNodeIndex(NodeList nl, String nodename) {
-        for (int i = 0; i < nl.getLength(); i++) {
-            if (nl.item(i).getNodeName().equals(nodename))
+        for(int i = 0 ; i < nl.getLength() ; i++) {
+            if(nl.item(i).getNodeName().equals(nodename))
                 return i;
         }
         return -1;

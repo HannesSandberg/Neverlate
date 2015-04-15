@@ -3,6 +3,7 @@ package com.example.hannes.neverlate;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -34,6 +35,13 @@ public class MapsActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+
+        /*  Note Michal Stypa:
+         *   Strict mode disables the ability to connect to internet on main thread in order to prevent accidental
+         *   network access. Networking should be handled by separate threads to prevent program crashes on network failure
+         *   */
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
     }
 
     @Override
@@ -99,8 +107,13 @@ public class MapsActivity extends FragmentActivity {
             markerLocation = latLng;
             markerLocationText = (TextView) findViewById(R.id.markerView);
             markerLocationText.setText("Marker coord: " + latLng.latitude + " , " + latLng.longitude);
-            RoutePlanner routePlanner = new RoutePlanner(gpsLocation, markerLocation, RoutePlanner.MODE_WALKING);
-            drawRoute(routePlanner);
+           if(markerLocation == null) {
+               System.out.println("\n \n \n \n markerLocation is null");
+           }else if(markerLocation != null){
+               System.out.println("\n \n \n \n markerLocation is not null");
+               RoutePlanner routePlanner = new RoutePlanner(gpsLocation, markerLocation, RoutePlanner.MODE_WALKING);
+               drawRoute(routePlanner);
+           }
         }
     };
     private void setUpMap() {
