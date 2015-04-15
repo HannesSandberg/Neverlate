@@ -41,7 +41,7 @@ public class MapsActivity extends FragmentActivity {
          *  Note Michal Stypa:
          *  Strict mode disables the ability to connect to internet on main thread in order to prevent accidental
          *  network access. Networking should be handled by separate threads to prevent program crashes on network failure.
-         *  Following two rows shall be removed when network connection is moved to separate thread!
+         *  Following two rows shall be removed when network connection is moved to separate thread!!
          */
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
