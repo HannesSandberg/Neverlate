@@ -29,6 +29,7 @@ public class MapsActivity extends FragmentActivity {
     private LatLng gpsLocation = null;
     private TextView gpsLocationText = null;
     private TextView markerLocationText = null;
+    private TextView distanceText = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +37,12 @@ public class MapsActivity extends FragmentActivity {
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
 
-        /*  Note Michal Stypa:
-         *   Strict mode disables the ability to connect to internet on main thread in order to prevent accidental
-         *   network access. Networking should be handled by separate threads to prevent program crashes on network failure
-         *   */
+        /**
+         *  Note Michal Stypa:
+         *  Strict mode disables the ability to connect to internet on main thread in order to prevent accidental
+         *  network access. Networking should be handled by separate threads to prevent program crashes on network failure.
+         *  Following two rows shall be removed when network connection is moved to separate thread!
+         */
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
     }
@@ -137,6 +140,8 @@ public class MapsActivity extends FragmentActivity {
             rectLine.add(directionPoint.get(i));
         }
         Polyline polylin = mMap.addPolyline(rectLine);
+        distanceText = (TextView) findViewById(R.id.distanceView);
+        distanceText.setText("Distance to target: " + routePlanner.getDistanceText(doc));
     }
 
   /*  private void oldSetUpMap{

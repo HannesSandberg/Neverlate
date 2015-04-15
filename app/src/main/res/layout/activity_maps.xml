@@ -31,4 +31,12 @@
         android:layout_above="@+id/gpsView"
         android:layout_alignStart="@+id/gpsView" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Distance shown here"
+        android:id="@+id/distanceView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
