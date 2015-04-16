@@ -37,6 +37,10 @@ public class MapsActivity extends FragmentActivity {
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
 
+        gpsLocationText = (TextView) findViewById(R.id.gpsView);
+        distanceText = (TextView) findViewById(R.id.distanceView);
+        markerLocationText = (TextView) findViewById(R.id.markerView);
+
         /**
          *  Note Michal Stypa:
          *  Strict mode disables the ability to connect to internet on main thread in order to prevent accidental
@@ -91,7 +95,6 @@ public class MapsActivity extends FragmentActivity {
         @Override
         public void onMyLocationChange(Location location) {
             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-            gpsLocationText = (TextView) findViewById(R.id.gpsView);
             gpsLocationText.setText("GPS coord: " + loc.latitude + " , " + loc.longitude);
             gpsLocation = loc;
             if(mMap != null){
@@ -108,7 +111,6 @@ public class MapsActivity extends FragmentActivity {
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(latLng));
             markerLocation = latLng;
-            markerLocationText = (TextView) findViewById(R.id.markerView);
             markerLocationText.setText("Marker coord: " + latLng.latitude + " , " + latLng.longitude);
            if(markerLocation == null) {
                System.out.println("\n \n \n \n markerLocation is null");
@@ -140,7 +142,6 @@ public class MapsActivity extends FragmentActivity {
             rectLine.add(directionPoint.get(i));
         }
         Polyline polylin = mMap.addPolyline(rectLine);
-        distanceText = (TextView) findViewById(R.id.distanceView);
         distanceText.setText("Distance to target: " + routePlanner.getDistanceText(doc));
     }
 
