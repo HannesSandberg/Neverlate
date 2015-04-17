@@ -4,15 +4,18 @@ import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.StrictMode;
+import android.os.Vibrator;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -22,7 +25,7 @@ import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 
-public class MapsActivity extends FragmentActivity {
+public class MapsActivity extends FragmentActivity implements View.OnClickListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private LatLng markerLocation = null;
@@ -30,6 +33,12 @@ public class MapsActivity extends FragmentActivity {
     private TextView gpsLocationText = null;
     private TextView markerLocationText = null;
     private TextView distanceText = null;
+    private TimePicker timePicker;
+    private Button setTimeButton;
+    private Button insideTimePickerButton;
+    private LinearLayout timeLayout;
+    private int arriveTimeHours;
+    private int arriveTimeMinutes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +49,14 @@ public class MapsActivity extends FragmentActivity {
         gpsLocationText = (TextView) findViewById(R.id.gpsView);
         distanceText = (TextView) findViewById(R.id.distanceView);
         markerLocationText = (TextView) findViewById(R.id.markerView);
+        timePicker = (TimePicker) findViewById(R.id.timePicker);
+        timePicker.setIs24HourView(true);
+        setTimeButton = (Button) findViewById(R.id.timeButton);
+        insideTimePickerButton = (Button) findViewById(R.id.insideTimePickerButton);
+        setTimeButton.setOnClickListener(this);
+        insideTimePickerButton.setOnClickListener(this);
+        timeLayout = (LinearLayout) findViewById(R.id.timeLayout);
+        timeLayout.setVisibility(View.INVISIBLE);
 
         /**
          *  Note Michal Stypa:
@@ -126,6 +143,7 @@ public class MapsActivity extends FragmentActivity {
         mMap.setOnMyLocationChangeListener(myLocationChangeListener);
         mMap.setOnMapLongClickListener(myLongClickListener);
 
+
     }
 
     private void drawRoute(RoutePlanner routePlanner){
@@ -145,18 +163,25 @@ public class MapsActivity extends FragmentActivity {
         distanceText.setText("Distance to target: " + routePlanner.getDistanceText(doc));
     }
 
-  /*  private void oldSetUpMap{
-        GPSTracker tracker = new GPSTracker(MapsActivity.this);
-        double latitude = tracker.getLatitude();
-        double longitude = tracker.getLongitude();
-        TextView tv = (TextView) findViewById(R.id.gpsView);
-        tv.setText(latitude + " , " + longitude);
-        // mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude )).title("Marker"));
-       *//* Circle circle = mMap.addCircle(new CircleOptions()
-                .center(new LatLng(latitude, longitude))
-                .radius(10000)
-                .strokeColor(Color.RED)
-                .fillColor(Color.BLUE));*//*
-        mMap.setMyLocationEnabled(true);
-    }*/
+    @Override
+    public void onClick(View v) {
+        if (v == setTimeButton){
+
+            Vibrator vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+            // Vibrate for 500 milliseconds
+            vibrator.vibrate(500);
+            if(timeLayout.getVisibility() == View.VISIBLE){
+                timeLayout.setVisibility(View.INVISIBLE);
+            }else {
+                timeLayout.setVisibility(View.VISIBLE);
+            }
+        } else if(v == insideTimePickerButton){
+            arriveTimeHours = timePicker.getCurrentHour();
+            arriveTimeMinutes = timePicker.getCurrentMinute();
+            timeLayout.setVisibility(View.INVISIBLE);
+            markerLocationText.setText("Arrival chosen: " + arriveTimeHours + ":" + arriveTimeMinutes);
+
+        }
+        return;
+    }
 }
