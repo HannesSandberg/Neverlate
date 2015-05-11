@@ -5,4 +5,5 @@
     android:layout_height="match_parent"
     android:divider="#000000"
     android:dividerHeight="0.5dip"
-    android:background="@android:color/background_light"/>
+    android:background="@android:color/background_light"
+    />
