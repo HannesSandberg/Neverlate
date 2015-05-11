@@ -1,12 +1,22 @@
 package com.example.hannes.neverlate;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.StrictMode;
 import android.os.Vibrator;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -24,8 +34,14 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements View.OnClickListener{
+//new stuff
+
+import com.jeremyfeinstein.slidingmenu.lib.*;
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
+
+public class MapsActivity extends SlidingFragmentActivity implements View.OnClickListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private LatLng markerLocation = null;
@@ -40,8 +56,12 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
     private int arriveTimeHours;
     private int arriveTimeMinutes;
 
+    //new stuff
+    protected ListFragment mFrag;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    //changed from protected to public
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
@@ -66,6 +86,26 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
          */
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        //SlidingMenu stuff
+
+        setBehindContentView(R.layout.menu_layout);
+        FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
+        mFrag = new MenuList();
+        ft.replace(R.id.menu_frame, mFrag);
+        ft.commit();
+        SlidingMenu sm = getSlidingMenu();
+        sm.setMode(SlidingMenu.LEFT_RIGHT);
+        sm.setMenu(R.layout.menu_layout);
+        sm.setSecondaryMenu(R.layout.right_menu);
+
+        sm.setShadowWidth(15);
+        sm.setBehindOffset(300); // Pixels from right screen edge to right menu edge
+        sm.setFadeDegree(0.35f);
+        sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+
+
+
     }
 
     @Override
@@ -112,7 +152,7 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
         @Override
         public void onMyLocationChange(Location location) {
             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-            gpsLocationText.setText("GPS coord: " + loc.latitude + " , " + loc.longitude);
+            //gpsLocationText.setText("GPS coord: " + loc.latitude + " , " + loc.longitude);
             gpsLocation = loc;
             if(mMap != null){
                 float zoom = mMap.getCameraPosition().zoom;
@@ -161,6 +201,7 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
         }
         Polyline polylin = mMap.addPolyline(rectLine);
         distanceText.setText("Distance to target: " + routePlanner.getDistanceText(doc));
+        gpsLocationText.setText(routePlanner.getArrivalTime(doc));
     }
 
     @Override
@@ -183,5 +224,50 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 
         }
         return;
+    }
+
+    //new stuff
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case android.R.id.home:
+                toggle();
+                return true;
+        }
+        return onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_test, menu);
+        return true;
+    }
+
+    public class BasePagerAdapter extends FragmentPagerAdapter {
+        private List<Fragment> mFragments = new ArrayList<Fragment>();
+        private ViewPager mPager;
+
+        public BasePagerAdapter(FragmentManager fm, ViewPager vp){
+            super(fm);
+            mPager = vp;
+            mPager.setAdapter(this);
+            for (int i = 0; i < 3; i++){
+                addTab(new MenuList());
+            }
+        }
+
+        public void addTab(Fragment frag){
+            mFragments.add(frag);
+        }
+
+        @Override
+        public Fragment getItem(int position){
+            return mFragments.get(position);
+        }
+
+        @Override
+        public int getCount(){
+            return mFragments.size();
+        }
     }
 }

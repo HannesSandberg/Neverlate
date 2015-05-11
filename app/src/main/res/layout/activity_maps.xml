@@ -37,17 +37,17 @@
         android:layout_height="wrap_content"
         android:text="Distance shown here"
         android:id="@+id/distanceView"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_above="@+id/markerView"
+        android:layout_alignEnd="@+id/markerView" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Set Time"
         android:id="@+id/timeButton"
+        android:onClick="setContentView"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:onClick="setContentView" />
+        android:layout_alignParentStart="true" />
 
     <LinearLayout
         android:orientation="vertical"

@@ -4,7 +4,9 @@ package com.example.hannes.neverlate;
  * Created by Michal on 15-04-13.
  */
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,8 +23,11 @@ import org.w3c.dom.NodeList;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import android.content.Context;
+
 import android.util.Log;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 
 public class RoutePlanner {
     public final static String MODE_BIKING = "biking";
@@ -77,6 +82,22 @@ public class RoutePlanner {
         return Integer.parseInt(node2.getTextContent());
     }
 
+    public String getArrivalTime(Document doc){
+        Date date = new Date();   // given date
+        Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
+        calendar.setTime(date);   // assigns calendar to given date
+        calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
+        calendar.get(Calendar.MINUTE);
+
+        int h = calendar.get(Calendar.HOUR_OF_DAY);
+        int m = calendar.get(Calendar.MINUTE);
+        System.out.println("h: " + h + "m: " + m);
+        int arrivalTime = h * 3600 + m * 60 + getDurationValue(doc);
+        h = arrivalTime/3600;
+        m = (arrivalTime - h*3600)/60;
+        return (h+":" + m);
+
+    }
     public String getDistanceText (Document doc) {
         NodeList nl1 = doc.getElementsByTagName("distance");
         Node node1 = nl1.item(nl1.getLength() - 1);

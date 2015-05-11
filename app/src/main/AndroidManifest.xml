@@ -11,13 +11,9 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!--
-     INTERNET ACCESS PERMISSION
-     -->
-    <uses-permission
-        android:name="android.permission.INTERNET" />
-
-    <uses-permission android:name="android.permission.VIBRATE"/>
+<!--      INTERNET ACCESS PERMISSION -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -34,7 +30,7 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
