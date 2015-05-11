@@ -32,6 +32,15 @@
             android:label="@string/title_activity_maps"
             android:screenOrientation="portrait" >
             <intent-filter>
+                <action android:name="android.intent.action.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".SplashscreenActivity"
+            android:label="@string/title_activity_maps"
+            android:screenOrientation="portrait" >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
