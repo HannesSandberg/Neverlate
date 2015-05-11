@@ -1,0 +1,71 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.1.+'
+    }
+}
+apply plugin: 'android-library'
+apply plugin: 'maven'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion '19.0.0'
+
+    sourceSets {
+        main {
+            manifest.srcFile 'SlidingMenu/library/AndroidManifest.xml'
+            java.srcDirs = ['SlidingMenu/library/src']
+            res.srcDirs = ['SlidingMenu/library/res']
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:+'
+    compile(name:'library-1.3', ext:'aar')
+}
+
+group = 'com.jeremyfeinstein.slidingmenu'
+version = '1.3'
+def artifactId = 'library'
+
+def repositoryUrl
+if (has('repoDir')) {
+    repositoryUrl = "file://$repoDir"
+} else {
+    repositoryUrl = "file://$buildDir/repo/"
+}
+
+afterEvaluate { project ->
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: repositoryUrl)
+                pom.artifactId = artifactId
+            }
+        }
+    }
+
+    task androidJavadocs(type: Javadoc) {
+        source = android.sourceSets.main.allJava
+    }
+    task androidJavadocsJar(type: Jar) {
+        classifier = 'javadoc'
+        from androidJavadocs.destinationDir
+    }
+    task androidSourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives androidSourcesJar
+        archives androidJavadocsJar
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.9'
+}

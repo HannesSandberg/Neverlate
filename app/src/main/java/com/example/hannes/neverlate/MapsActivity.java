@@ -103,8 +103,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         sm.setBehindOffset(300); // Pixels from right screen edge to right menu edge
         sm.setFadeDegree(0.35f);
         sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-
-
+        sm.setShadowDrawable(R.drawable.shadow);
 
     }
 
