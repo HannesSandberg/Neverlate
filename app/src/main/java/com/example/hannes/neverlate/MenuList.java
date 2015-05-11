@@ -12,11 +12,9 @@ import android.widget.ArrayAdapter;
 public class MenuList extends ListFragment {
 
     String[] list_contents = {
-            "Grymt",
-            "John",
-            "att",
-            "du",
-            "löste!"
+            "Sync with calendar",
+            "Settings",
+            "About Neverlate"
     };
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){

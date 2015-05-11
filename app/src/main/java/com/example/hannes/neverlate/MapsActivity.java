@@ -92,7 +92,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         setBehindContentView(R.layout.menu_layout);
         FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
         mFrag = new MenuList();
-        ft.replace(R.id.menu_frame, mFrag);
+        ft.replace(R.id.list_placeholder, mFrag);
         ft.commit();
         SlidingMenu sm = getSlidingMenu();
         sm.setMode(SlidingMenu.LEFT_RIGHT);
