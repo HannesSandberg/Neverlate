@@ -1,20 +1,18 @@
 package com.example.hannes.neverlate;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +28,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
 import org.w3c.dom.Document;
 
@@ -37,9 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 //new stuff
-
-import com.jeremyfeinstein.slidingmenu.lib.*;
-import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
 public class MapsActivity extends SlidingFragmentActivity implements View.OnClickListener{
 
@@ -55,6 +52,9 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private LinearLayout timeLayout;
     private int arriveTimeHours;
     private int arriveTimeMinutes;
+    private boolean haveDestination = false;
+    private Document doc;
+    private  TempoHolder tempoHolder;
 
     //new stuff
     protected ListFragment mFrag;
@@ -65,7 +65,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
-
+        tempoHolder = new TempoHolder();
         gpsLocationText = (TextView) findViewById(R.id.gpsView);
         distanceText = (TextView) findViewById(R.id.distanceView);
         markerLocationText = (TextView) findViewById(R.id.markerView);
@@ -157,10 +157,35 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                 float zoom = mMap.getCameraPosition().zoom;
                 if(zoom < 10.0f) {
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+
                 }
             }
+            try {
+
+
+                tempoHolder();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         }
     };
+    private void tempoHolder() throws InterruptedException {
+
+        if(haveDestination&& (arriveTimeHours+ arriveTimeMinutes) != 0 ){
+            RoutePlanner routePlanner = new RoutePlanner(gpsLocation, markerLocation, RoutePlanner.MODE_WALKING);
+            drawRoute(routePlanner);
+            int estimatedArrivalTime = routePlanner.getDurationValue(doc);
+            int estimatedDistanceToTarget = routePlanner.getDistanceValue(doc);
+            int timeYouWantToBeThere = (arriveTimeHours*60 + arriveTimeMinutes) * 60;
+            Log.d("John","EstimatedArrivalTime: "+ estimatedArrivalTime + "TimeToBeThere:  " +timeYouWantToBeThere  );
+            if(estimatedArrivalTime>timeYouWantToBeThere&&!tempoHolder.isVibrating()){
+
+             tempoHolder.vibrateTheWakingSpeed(estimatedDistanceToTarget,estimatedArrivalTime
+                        ,(Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
+            }
+    }
+    }
     private GoogleMap.OnMapLongClickListener myLongClickListener = new GoogleMap.OnMapLongClickListener(){
         @Override
         public void onMapLongClick(LatLng latLng) {
@@ -186,8 +211,11 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     }
 
     private void drawRoute(RoutePlanner routePlanner){
-        Document doc = routePlanner.getDocument();
+        Log.d("John","Det fungerar" );
 
+        System.out.println("hej");
+        doc = routePlanner.getDocument();
+        haveDestination = true;
         if(doc==null) {
             System.out.println("Doc null");
         }
