@@ -40,15 +40,6 @@
         android:layout_above="@+id/markerView"
         android:layout_alignEnd="@+id/markerView" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Set Time"
-        android:id="@+id/timeButton"
-        android:onClick="setContentView"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
@@ -75,6 +66,14 @@
             android:layout_gravity="center_horizontal" />
 
     </LinearLayout>
+
+    <ImageButton
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:id="@+id/menuButton"
+        android:background="@drawable/menubutton"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>

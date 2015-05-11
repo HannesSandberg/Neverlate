@@ -77,9 +77,9 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         markerLocationText = (TextView) findViewById(R.id.markerView);
         timePicker = (TimePicker) findViewById(R.id.timePicker);
         timePicker.setIs24HourView(true);
-        setTimeButton = (Button) findViewById(R.id.timeButton);
+        //setTimeButton = (Button) findViewById(R.id.timeButton);
         insideTimePickerButton = (Button) findViewById(R.id.insideTimePickerButton);
-        setTimeButton.setOnClickListener(this);
+        //setTimeButton.setOnClickListener(this);
         insideTimePickerButton.setOnClickListener(this);
         timeLayout = (LinearLayout) findViewById(R.id.timeLayout);
         timeLayout.setVisibility(View.INVISIBLE);
@@ -237,7 +237,14 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                System.out.println("\n \n \n \n markerLocation is not null");
                RoutePlanner routePlanner = new RoutePlanner(gpsLocation, markerLocation, RoutePlanner.MODE_WALKING);
                drawRoute(routePlanner);
+
            }
+
+            if(timeLayout.getVisibility() == View.VISIBLE){
+                timeLayout.setVisibility(View.INVISIBLE);
+            }else {
+                timeLayout.setVisibility(View.VISIBLE);
+            }
         }
     };
     private void setUpMap() {
@@ -265,6 +272,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             rectLine.add(directionPoint.get(i));
         }
         Polyline polylin = mMap.addPolyline(rectLine);
+
         //distanceText.setText("Distance to target: " + routePlanner.getDistanceText(doc));
         //gpsLocationText.setText(routePlanner.getArrivalTime(doc));
         //set menu labels
@@ -282,11 +290,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             Vibrator vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
             // Vibrate for 500 milliseconds
             vibrator.vibrate(500);
-            if(timeLayout.getVisibility() == View.VISIBLE){
-                timeLayout.setVisibility(View.INVISIBLE);
-            }else {
-                timeLayout.setVisibility(View.VISIBLE);
-            }
+
         } else if(v == insideTimePickerButton){
             arriveTimeHours = timePicker.getCurrentHour();
             arriveTimeMinutes = timePicker.getCurrentMinute();
