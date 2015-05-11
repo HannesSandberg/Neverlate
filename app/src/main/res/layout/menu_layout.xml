@@ -2,32 +2,42 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:id="@+id/menu_frame">
+    android:id="@+id/menu_frame"
+    android:paddingBottom="150dp">
 
-    <FrameLayout android:id="@+id/list_placeholder" android:layout_weight="1"
+
+
+    <FrameLayout
+        android:id="@+id/list_placeholder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lay
+        android:layout_alignParentBottom="true"
         />
 
     <ImageButton
-        android:layout_width="150dip"
-        android:layout_height="90dip"
+        android:layout_width="90dip"
+        android:layout_height="60dip"
         android:id="@+id/walkButton"
+        android:background="@drawable/walk"
+        android:layout_above="@id/list_placeholder"/>
 
-        android:layout_below="@+id/list_placeholder"
-        android:background="@drawable/walk"/>
 
     <ImageButton
-        android:layout_width="150dip"
-        android:layout_height="90dip"
+        android:layout_width="90dip"
+        android:layout_height="60dip"
         android:id="@+id/imageButton"
-        android:layout_below="@+id/list_placeholder"
         android:layout_toEndOf="@+id/walkButton"
+        android:layout_above="@id/list_placeholder"
+        android:background="@drawable/bike"
+      />
 
-        android:background="@drawable/bike"/>
-
-
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Switch"
+        android:id="@+id/switch1"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>
