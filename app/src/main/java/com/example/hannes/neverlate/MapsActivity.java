@@ -34,6 +34,9 @@ import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 //new stuff
@@ -45,7 +48,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private LatLng gpsLocation = null;
     private TextView gpsLocationText = null;
     private TextView markerLocationText = null;
-    private TextView distanceText = null;
+    //private TextView distanceText = null;
     private TimePicker timePicker;
     private Button setTimeButton;
     private Button insideTimePickerButton;
@@ -55,7 +58,10 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private boolean haveDestination = false;
     private Document doc;
     private  TempoHolder tempoHolder;
-
+    private TextView addressText;
+    private TextView arrivalTimeText;
+    private TextView distanceText;
+    private TextView onTimeText;
     //new stuff
     protected ListFragment mFrag;
 
@@ -77,6 +83,10 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         insideTimePickerButton.setOnClickListener(this);
         timeLayout = (LinearLayout) findViewById(R.id.timeLayout);
         timeLayout.setVisibility(View.INVISIBLE);
+        addressText = (TextView) findViewById(R.id.address);
+        arrivalTimeText = (TextView) findViewById(R.id.arrivalTime);
+        distanceText = (TextView) findViewById(R.id.distance);
+        onTimeText = (TextView) findViewById(R.id.onTime);
 
         /**
          *  Note Michal Stypa:
@@ -175,14 +185,42 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         if(haveDestination&& (arriveTimeHours+ arriveTimeMinutes) != 0 ){
             RoutePlanner routePlanner = new RoutePlanner(gpsLocation, markerLocation, RoutePlanner.MODE_WALKING);
             drawRoute(routePlanner);
-            int estimatedArrivalTime = routePlanner.getDurationValue(doc);
+            //int estimatedArrivalTime = routePlanner.getDurationValue(doc);
+
+
+            //new stuff
+            Date date = new Date();   // given date
+            Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
+            calendar.setTime(date);   // assigns calendar to given date
+            calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
+            calendar.get(Calendar.MINUTE);
+
+            int h = calendar.get(Calendar.HOUR_OF_DAY);
+            int m = calendar.get(Calendar.MINUTE);
+            System.out.println("h: " + h + "m: " + m);
+            int estimatedArrivalTime = h * 3600 + m * 60 + routePlanner.getDurationValue(doc);
+
+            //end of new stuff
+
             int estimatedDistanceToTarget = routePlanner.getDistanceValue(doc);
             int timeYouWantToBeThere = (arriveTimeHours*60 + arriveTimeMinutes) * 60;
             Log.d("John","EstimatedArrivalTime: "+ estimatedArrivalTime + "TimeToBeThere:  " +timeYouWantToBeThere  );
             if(estimatedArrivalTime>timeYouWantToBeThere&&!tempoHolder.isVibrating()){
-
-             tempoHolder.vibrateTheWakingSpeed(estimatedDistanceToTarget,estimatedArrivalTime
+                //onTimeText.setText("NO");
+                    tempoHolder = new TempoHolder();
+                    tempoHolder.startVibrate(estimatedDistanceToTarget,estimatedArrivalTime
                         ,(Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
+                //Thread t = new Thread(tempoHolder);
+                //t.start();
+
+
+                    tempoHolder.start();
+             //tempoHolder.vibrateTheWakingSpeed(estimatedDistanceToTarget,estimatedArrivalTime
+                        //,(Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
+            }else{
+                //tempoHolder = new TempoHolder();
+                //onTimeText.setText("YES");
+                tempoHolder.stopVibrate();
             }
     }
     }
@@ -227,8 +265,14 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             rectLine.add(directionPoint.get(i));
         }
         Polyline polylin = mMap.addPolyline(rectLine);
-        distanceText.setText("Distance to target: " + routePlanner.getDistanceText(doc));
-        gpsLocationText.setText(routePlanner.getArrivalTime(doc));
+        //distanceText.setText("Distance to target: " + routePlanner.getDistanceText(doc));
+        //gpsLocationText.setText(routePlanner.getArrivalTime(doc));
+        //set menu labels
+
+
+        //addressText.setText(routePlanner.getEndAddress(doc));
+        //arrivalTimeText.setText(routePlanner.getArrivalTime(doc));
+        //distanceText.setText(routePlanner.getDistanceText(doc));
     }
 
     @Override
