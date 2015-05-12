@@ -46,8 +46,10 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+
         android:background="@android:color/white"
         android:id="@+id/timeLayout">
+
 
 
         <TimePicker
@@ -63,25 +65,17 @@
             android:id="@+id/insideTimePickerButton"
             android:layout_gravity="center_horizontal" />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:background="@android:color/white"
-        android:id="@+id/arrivedLayout">
-
-
     </LinearLayout>
 
     <ImageButton
-        android:layout_width="50dip"
-        android:layout_height="50dip"
+        android:layout_width="157dip"
+        android:layout_height="41dip"
         android:id="@+id/menuButton"
         android:background="@drawable/menubutton"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="12dip"
+        android:layout_marginTop="12dip"/>
 
 
 </RelativeLayout>

@@ -87,6 +87,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         timeLayout.setVisibility(View.INVISIBLE);
         arrivedLayout = (LinearLayout) findViewById(R.id.timeLayout);
         arrivedLayout.setVisibility(View.INVISIBLE);
+        menuButton.getBackground().setAlpha(210);
 
         /**
          *  Note Michal Stypa:
@@ -224,11 +225,11 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                 tempoHolder.start();
                 //tempoHolder.vibrateTheWakingSpeed(estimatedDistanceToTarget,estimatedArrivalTime
                 //,(Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
-            }else{
+            }else {
                 //tempoHolder = new TempoHolder();
                 onTimeText.setText("YES");
                 tempoHolder.stopVibrate();
-            } else {
+            }
                 if(estimatedArrivalTime < (currentTime + 10)) {
                     if(arrivedLayout.getVisibility() == View.VISIBLE){
                         arrivedLayout.setVisibility(View.INVISIBLE);
@@ -237,7 +238,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                     }
                 }
             }
-    }
+
     }
     private GoogleMap.OnMapLongClickListener myLongClickListener = new GoogleMap.OnMapLongClickListener(){
         @Override
