@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -50,21 +51,21 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private TextView markerLocationText = null;
     //private TextView distanceText = null;
     private TimePicker timePicker;
-    private Button setTimeButton;
+    private ImageButton menuButton;
     private Button insideTimePickerButton;
     private LinearLayout timeLayout;
     private int arriveTimeHours;
     private int arriveTimeMinutes;
     private boolean haveDestination = false;
     private Document doc;
-    private  TempoHolder tempoHolder;
+    private TempoHolder tempoHolder;
     private TextView addressText;
     private TextView arrivalTimeText;
     private TextView distanceText;
     private TextView onTimeText;
     //new stuff
     protected ListFragment mFrag;
-
+    private SlidingMenu sm;
     @Override
     //changed from protected to public
     public void onCreate(Bundle savedInstanceState) {
@@ -77,9 +78,9 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         markerLocationText = (TextView) findViewById(R.id.markerView);
         timePicker = (TimePicker) findViewById(R.id.timePicker);
         timePicker.setIs24HourView(true);
-        //setTimeButton = (Button) findViewById(R.id.timeButton);
+        menuButton = (ImageButton) findViewById(R.id.menuButton);
         insideTimePickerButton = (Button) findViewById(R.id.insideTimePickerButton);
-        //setTimeButton.setOnClickListener(this);
+        menuButton.setOnClickListener(this);
         insideTimePickerButton.setOnClickListener(this);
         timeLayout = (LinearLayout) findViewById(R.id.timeLayout);
         timeLayout.setVisibility(View.INVISIBLE);
@@ -104,10 +105,11 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         mFrag = new MenuList();
         ft.replace(R.id.list_placeholder, mFrag);
         ft.commit();
-        SlidingMenu sm = getSlidingMenu();
+        sm = getSlidingMenu();
         sm.setMode(SlidingMenu.LEFT_RIGHT);
         sm.setMenu(R.layout.menu_layout);
         sm.setSecondaryMenu(R.layout.right_menu);
+
 
         sm.setShadowWidth(15);
         sm.setBehindOffset(300); // Pixels from right screen edge to right menu edge
@@ -285,11 +287,19 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        if (v == setTimeButton){
+        if (v == menuButton){
 
             Vibrator vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
             // Vibrate for 500 milliseconds
             vibrator.vibrate(500);
+            menuButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    sm.showMenu();
+                    //or
+                    //menu.toggle();
+                }
+            });
 
         } else if(v == insideTimePickerButton){
             arriveTimeHours = timePicker.getCurrentHour();
