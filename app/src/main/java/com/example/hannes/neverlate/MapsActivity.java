@@ -54,6 +54,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private ImageButton menuButton;
     private Button insideTimePickerButton;
     private LinearLayout timeLayout;
+    private LinearLayout arrivedLayout;
     private int arriveTimeHours;
     private int arriveTimeMinutes;
     private boolean haveDestination = false;
@@ -84,6 +85,8 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         insideTimePickerButton.setOnClickListener(this);
         timeLayout = (LinearLayout) findViewById(R.id.timeLayout);
         timeLayout.setVisibility(View.INVISIBLE);
+        arrivedLayout = (LinearLayout) findViewById(R.id.timeLayout);
+        arrivedLayout.setVisibility(View.INVISIBLE);
 
         /**
          *  Note Michal Stypa:
@@ -205,30 +208,34 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             int m = calendar.get(Calendar.MINUTE);
             System.out.println("h: " + h + "m: " + m);
             int estimatedArrivalTime = h * 3600 + m * 60 + routePlanner.getDurationValue(doc);
-
-
-
+            int currentTime = h * 3600 + m * 60;
             //end of new stuff
 
             int estimatedDistanceToTarget = routePlanner.getDistanceValue(doc);
             int timeYouWantToBeThere = (arriveTimeHours*60 + arriveTimeMinutes) * 60;
             Log.d("John","EstimatedArrivalTime: "+ estimatedArrivalTime + "TimeToBeThere:  " +timeYouWantToBeThere  );
-            if(estimatedArrivalTime>timeYouWantToBeThere&&!tempoHolder.isVibrating()){
+            if(estimatedArrivalTime>timeYouWantToBeThere&&!tempoHolder.isVibrating()) {
                 onTimeText.setText("NO");
-                    tempoHolder = new TempoHolder();
-                    tempoHolder.startVibrate(estimatedDistanceToTarget,estimatedArrivalTime
-                        ,(Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
+                tempoHolder = new TempoHolder();
+                tempoHolder.startVibrate(estimatedDistanceToTarget, estimatedArrivalTime
+                        , (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
                 //Thread t = new Thread(tempoHolder);
                 //t.start();
-
-
-                    tempoHolder.start();
-             //tempoHolder.vibrateTheWakingSpeed(estimatedDistanceToTarget,estimatedArrivalTime
-                        //,(Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
+                tempoHolder.start();
+                //tempoHolder.vibrateTheWakingSpeed(estimatedDistanceToTarget,estimatedArrivalTime
+                //,(Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
             }else{
                 //tempoHolder = new TempoHolder();
                 onTimeText.setText("YES");
                 tempoHolder.stopVibrate();
+            } else {
+                if(estimatedArrivalTime < (currentTime + 10)) {
+                    if(arrivedLayout.getVisibility() == View.VISIBLE){
+                        arrivedLayout.setVisibility(View.INVISIBLE);
+                    }else {
+                        arrivedLayout.setVisibility(View.VISIBLE);
+                    }
+                }
             }
     }
     }
