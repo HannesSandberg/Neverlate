@@ -59,13 +59,15 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private boolean haveDestination = false;
     private Document doc;
     private TempoHolder tempoHolder;
-    private TextView addressText;
-    private TextView arrivalTimeText;
-    private TextView distanceText;
-    private TextView onTimeText;
+
     //new stuff
     protected ListFragment mFrag;
     private SlidingMenu sm;
+    TextView address; // = (TextView) findViewById(R.id.address);
+    TextView arrivalTime; // = (TextView) findViewById(R.id.arrivalTime);
+    TextView distance; // = (TextView) findViewById(R.id.distance);
+    TextView onTime; // = (TextView) findViewById(R.id.onTime);
+
     @Override
     //changed from protected to public
     public void onCreate(Bundle savedInstanceState) {
@@ -74,7 +76,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         setUpMapIfNeeded();
         tempoHolder = new TempoHolder();
         gpsLocationText = (TextView) findViewById(R.id.gpsView);
-        distanceText = (TextView) findViewById(R.id.distanceView);
+        //distanceTe = (TextView) findViewById(R.id.distanceView);
         markerLocationText = (TextView) findViewById(R.id.markerView);
         timePicker = (TimePicker) findViewById(R.id.timePicker);
         timePicker.setIs24HourView(true);
@@ -84,10 +86,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         insideTimePickerButton.setOnClickListener(this);
         timeLayout = (LinearLayout) findViewById(R.id.timeLayout);
         timeLayout.setVisibility(View.INVISIBLE);
-        addressText = (TextView) findViewById(R.id.address);
-        arrivalTimeText = (TextView) findViewById(R.id.arrivalTime);
-        distanceText = (TextView) findViewById(R.id.distance);
-        onTimeText = (TextView) findViewById(R.id.onTime);
+
 
         /**
          *  Note Michal Stypa:
@@ -109,7 +108,11 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         sm.setMode(SlidingMenu.LEFT_RIGHT);
         sm.setMenu(R.layout.menu_layout);
         sm.setSecondaryMenu(R.layout.right_menu);
-
+        View rightMenu = sm.getSecondaryMenu();
+        address = (TextView) rightMenu.findViewById(R.id.address);
+        arrivalTime = (TextView) rightMenu.findViewById(R.id.arrivalTime);
+        distance = (TextView) rightMenu.findViewById(R.id.distance);
+        onTime = (TextView) rightMenu.findViewById(R.id.onTime);
 
         sm.setShadowWidth(15);
         sm.setBehindOffset(300); // Pixels from right screen edge to right menu edge
@@ -182,6 +185,8 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
 
         }
     };
+
+
     private void tempoHolder() throws InterruptedException {
 
         if(haveDestination&& (arriveTimeHours+ arriveTimeMinutes) != 0 ){
@@ -209,6 +214,9 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             Log.d("John","EstimatedArrivalTime: "+ estimatedArrivalTime + "TimeToBeThere:  " +timeYouWantToBeThere  );
             if(estimatedArrivalTime>timeYouWantToBeThere&&!tempoHolder.isVibrating()){
                 //onTimeText.setText("NO");
+                onTime.setText("No");
+
+
                     tempoHolder = new TempoHolder();
                     tempoHolder.startVibrate(estimatedDistanceToTarget,estimatedArrivalTime
                         ,(Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
@@ -221,7 +229,8 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                         //,(Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
             }else{
                 //tempoHolder = new TempoHolder();
-                //onTimeText.setText("YES");
+                onTime.setText("YES");
+
                 tempoHolder.stopVibrate();
             }
     }
@@ -280,9 +289,10 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         //set menu labels
 
 
-        //addressText.setText(routePlanner.getEndAddress(doc));
-        //arrivalTimeText.setText(routePlanner.getArrivalTime(doc));
-        //distanceText.setText(routePlanner.getDistanceText(doc));
+        address.setText(routePlanner.getEndAddress(doc));
+        arrivalTime.setText(routePlanner.getArrivalTime(doc));
+        distance.setText(routePlanner.getDistanceText(doc));
+
     }
 
     @Override
