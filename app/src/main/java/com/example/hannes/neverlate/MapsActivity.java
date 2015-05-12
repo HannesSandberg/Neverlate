@@ -84,10 +84,6 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         insideTimePickerButton.setOnClickListener(this);
         timeLayout = (LinearLayout) findViewById(R.id.timeLayout);
         timeLayout.setVisibility(View.INVISIBLE);
-        addressText = (TextView) findViewById(R.id.address);
-        arrivalTimeText = (TextView) findViewById(R.id.arrivalTime);
-        distanceText = (TextView) findViewById(R.id.distance);
-        onTimeText = (TextView) findViewById(R.id.onTime);
 
         /**
          *  Note Michal Stypa:
@@ -109,6 +105,12 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         sm.setMode(SlidingMenu.LEFT_RIGHT);
         sm.setMenu(R.layout.menu_layout);
         sm.setSecondaryMenu(R.layout.right_menu);
+        View rightView = sm.getSecondaryMenu();
+
+        addressText = (TextView) rightView.findViewById(R.id.address);
+        arrivalTimeText = (TextView) rightView.findViewById(R.id.arrivalTime);
+        distanceText = (TextView) rightView.findViewById(R.id.distance);
+        onTimeText = (TextView) rightView.findViewById(R.id.onTime);
 
 
         sm.setShadowWidth(15);
@@ -182,6 +184,8 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
 
         }
     };
+
+
     private void tempoHolder() throws InterruptedException {
 
         if(haveDestination&& (arriveTimeHours+ arriveTimeMinutes) != 0 ){
@@ -202,13 +206,15 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             System.out.println("h: " + h + "m: " + m);
             int estimatedArrivalTime = h * 3600 + m * 60 + routePlanner.getDurationValue(doc);
 
+
+
             //end of new stuff
 
             int estimatedDistanceToTarget = routePlanner.getDistanceValue(doc);
             int timeYouWantToBeThere = (arriveTimeHours*60 + arriveTimeMinutes) * 60;
             Log.d("John","EstimatedArrivalTime: "+ estimatedArrivalTime + "TimeToBeThere:  " +timeYouWantToBeThere  );
             if(estimatedArrivalTime>timeYouWantToBeThere&&!tempoHolder.isVibrating()){
-                //onTimeText.setText("NO");
+                onTimeText.setText("NO");
                     tempoHolder = new TempoHolder();
                     tempoHolder.startVibrate(estimatedDistanceToTarget,estimatedArrivalTime
                         ,(Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
@@ -221,7 +227,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                         //,(Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
             }else{
                 //tempoHolder = new TempoHolder();
-                //onTimeText.setText("YES");
+                onTimeText.setText("YES");
                 tempoHolder.stopVibrate();
             }
     }
@@ -280,9 +286,9 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         //set menu labels
 
 
-        //addressText.setText(routePlanner.getEndAddress(doc));
-        //arrivalTimeText.setText(routePlanner.getArrivalTime(doc));
-        //distanceText.setText(routePlanner.getDistanceText(doc));
+        addressText.setText(routePlanner.getEndAddress(doc));
+        arrivalTimeText.setText(routePlanner.getArrivalTime(doc));
+        distanceText.setText(routePlanner.getDistanceText(doc));
     }
 
     @Override
