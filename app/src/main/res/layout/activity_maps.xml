@@ -67,13 +67,15 @@
 
     </LinearLayout>
 
-        <ImageButton
-            android:layout_width="50dip"
-            android:layout_height="50dip"
-            android:id="@+id/menuButton"
-         android:background="@drawable/walk"
+    <ImageButton
+        android:layout_width="157dip"
+        android:layout_height="41dip"
+        android:id="@+id/menuButton"
+        android:background="@drawable/menubutton"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="12dip"
+        android:layout_marginTop="12dip"/>
 
 
 </RelativeLayout>
