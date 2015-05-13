@@ -54,7 +54,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private ImageButton menuButton;
     private Button insideTimePickerButton;
     private LinearLayout timeLayout;
-    private LinearLayout arrivedLayout;
+    private LinearLayout dialogLayout;
     private int arriveTimeHours;
     private int arriveTimeMinutes;
     private boolean haveDestination = false;
@@ -67,6 +67,9 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     //new stuff
     protected ListFragment mFrag;
     private SlidingMenu sm;
+    private TextView dialogText;
+    private Button dialogOKButton;
+
     @Override
     //changed from protected to public
     public void onCreate(Bundle savedInstanceState) {
@@ -85,9 +88,13 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         insideTimePickerButton.setOnClickListener(this);
         timeLayout = (LinearLayout) findViewById(R.id.timeLayout);
         timeLayout.setVisibility(View.INVISIBLE);
-        arrivedLayout = (LinearLayout) findViewById(R.id.timeLayout);
-        arrivedLayout.setVisibility(View.INVISIBLE);
+        dialogLayout = (LinearLayout) findViewById(R.id.dialogLayout);
+        dialogLayout.setVisibility(View.INVISIBLE);
         menuButton.getBackground().setAlpha(210);
+        dialogText = (TextView) findViewById(R.id.dialogText);
+        dialogOKButton = (Button) findViewById(R.id.insideDialogButton);
+        dialogOKButton.setOnClickListener(this);
+
 
         /**
          *  Note Michal Stypa:
@@ -223,6 +230,8 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                 //Thread t = new Thread(tempoHolder);
                 //t.start();
                 tempoHolder.start();
+                dialogLayout.setVisibility(View.VISIBLE);
+                dialogText.setText("Du är sen! Öka!");
                 //tempoHolder.vibrateTheWakingSpeed(estimatedDistanceToTarget,estimatedArrivalTime
                 //,(Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
             }else {
@@ -231,11 +240,8 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                 tempoHolder.stopVibrate();
             }
                 if(estimatedArrivalTime < (currentTime + 10)) {
-                    if(arrivedLayout.getVisibility() == View.VISIBLE){
-                        arrivedLayout.setVisibility(View.INVISIBLE);
-                    }else {
-                        arrivedLayout.setVisibility(View.VISIBLE);
-                    }
+                    dialogLayout.setVisibility(View.VISIBLE);
+                    dialogText.setText("Du är nu framme!");
                 }
             }
 
@@ -256,11 +262,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
 
            }
 
-            if(timeLayout.getVisibility() == View.VISIBLE){
-                timeLayout.setVisibility(View.INVISIBLE);
-            }else {
-                timeLayout.setVisibility(View.VISIBLE);
-            }
+            timeLayout.setVisibility(View.VISIBLE);
         }
     };
     private void setUpMap() {
@@ -321,6 +323,10 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             timeLayout.setVisibility(View.INVISIBLE);
             markerLocationText.setText("Arrival chosen: " + arriveTimeHours + ":" + arriveTimeMinutes);
 
+        } else if(v == dialogOKButton){
+            dialogLayout.setVisibility(View.INVISIBLE);
+            //STOPPAR VIBRATIONERNA OM MAN TRYCKER OK PÅ DIALOGRUTAN SOM SÄGER ATT MAN ÄR SEN
+            tempoHolder.stopVibrate();
         }
         return;
     }

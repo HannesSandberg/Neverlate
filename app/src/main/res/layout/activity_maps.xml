@@ -51,19 +51,59 @@
         android:id="@+id/timeLayout">
 
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="When would you like to arrive?"
+            android:id="@+id/clockText"
+            android:layout_gravity="center_horizontal" />
 
         <TimePicker
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/timePicker"
-            android:timePickerMode= "clock"/>
+            android:timePickerMode= "clock"
+            android:layout_marginLeft="12dip"
+
+            />
 
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="Set Time"
             android:id="@+id/insideTimePickerButton"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/button_material_light"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="250dip"
+        android:layout_height="100dip"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/white"
+        android:id="@+id/dialogLayout"
+        >
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Dialog text shown here"
+            android:id="@+id/dialogText"
             android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            android:id="@+id/insideDialogButton"
+            android:background="@color/button_material_light"
+            android:layout_marginTop="40dip"/>
 
     </LinearLayout>
 
