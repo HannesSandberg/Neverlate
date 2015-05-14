@@ -86,11 +86,6 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         //Setting default transport mode to walking
         transportMode = RoutePlanner.MODE_WALKING;
 
-        //not needed anymore
-        //gpsLocationText = (TextView) findViewById(R.id.gpsView);
-       // distanceText = (TextView) findViewById(R.id.distanceView);
-       // markerLocationText = (TextView) findViewById(R.id.markerView);
-
         timePicker = (TimePicker) findViewById(R.id.timePicker);
         timePicker.setIs24HourView(true);
         menuButton = (ImageButton) findViewById(R.id.menuButton);
@@ -272,7 +267,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             System.out.println("Doc null");
         }
         ArrayList<LatLng> directionPoint = routePlanner.getDirection(doc);
-        PolylineOptions rectLine = new PolylineOptions().width(3).color(
+        PolylineOptions rectLine = new PolylineOptions().width(5).color(
                 Color.RED);
 
         for (int i = 0; i < directionPoint.size(); i++) {
@@ -293,16 +288,10 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     @Override
     public void onClick(View v) {
         if (v == menuButton){
-
-            Vibrator vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
-            // Vibrate for 500 milliseconds
-            vibrator.vibrate(500);
             menuButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View arg0) {
                     sm.showMenu();
-                    //or
-                    //menu.toggle();
                 }
             });
 
