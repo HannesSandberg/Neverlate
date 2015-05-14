@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -70,6 +71,8 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private TextView dialogText;
     private Button dialogOKButton;
     private Singleton singleton;
+    private ToggleButton toggle;
+    private String transportMode;
 
     @Override
     //changed from protected to public
@@ -78,6 +81,10 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
         tempoHolder = new TempoHolder();
+
+
+        //Setting default transport mode to walking
+        transportMode = RoutePlanner.MODE_WALKING;
 
         //not needed anymore
         //gpsLocationText = (TextView) findViewById(R.id.gpsView);
@@ -124,6 +131,8 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         sm.setMenu(R.layout.menu_layout);
         sm.setSecondaryMenu(R.layout.right_menu);
         View rightView = sm.getSecondaryMenu();
+        toggle = (ToggleButton) sm.getMenu().findViewById(R.id.toggle); //Toggle button
+
 
         addressText = (TextView) rightView.findViewById(R.id.address);
         arrivalTimeText = (TextView) rightView.findViewById(R.id.arrivalTime);
@@ -213,7 +222,6 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     };
 
 
-
     private GoogleMap.OnMapLongClickListener myLongClickListener = new GoogleMap.OnMapLongClickListener(){
         @Override
         public void onMapLongClick(LatLng latLng) {
@@ -225,7 +233,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                 System.out.println("\n \n \n \n markerLocation is null");
             }else if(markerLocation != null){
                 System.out.println("\n \n \n \n markerLocation is not null");
-                RoutePlanner routePlanner = new RoutePlanner(gpsLocation, markerLocation, RoutePlanner.MODE_WALKING);
+                RoutePlanner routePlanner = new RoutePlanner(gpsLocation, markerLocation, transportMode);
                 singleton.setRoutePlanner(routePlanner);
                 drawRoute(routePlanner);
 
@@ -234,12 +242,26 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             timeLayout.setVisibility(View.VISIBLE);
         }
     };
+
     private void setUpMap() {
         mMap.setMyLocationEnabled(true);
         mMap.setOnMyLocationChangeListener(myLocationChangeListener);
         mMap.setOnMapLongClickListener(myLongClickListener);
 
 
+    }
+
+    private void changeTransportMode(){
+        if(transportMode == RoutePlanner.MODE_WALKING){
+            transportMode = RoutePlanner.MODE_BIKING;
+        }else if(transportMode == RoutePlanner.MODE_BIKING){
+            transportMode = RoutePlanner.MODE_BIKING;
+        }
+        if(singleton.getRoutePlanner() != null){
+            RoutePlanner tempRoutePlaner = new RoutePlanner(gpsLocation, markerLocation, transportMode);
+            singleton.setRoutePlanner(tempRoutePlaner);
+            drawRoute(tempRoutePlaner);
+        }
     }
 
     private void drawRoute(RoutePlanner routePlanner){
