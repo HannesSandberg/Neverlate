@@ -47,6 +47,8 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private LatLng markerLocation = null;
     private LatLng gpsLocation = null;
+    private TextView gpsLocationText = null;
+    private TextView markerLocationText = null;
     //private TextView distanceText = null;
     private TimePicker timePicker;
     private ImageButton menuButton;
@@ -67,6 +69,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private SlidingMenu sm;
     private TextView dialogText;
     private Button dialogOKButton;
+    private Singleton singleton;
 
     @Override
     //changed from protected to public
@@ -75,6 +78,12 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
         tempoHolder = new TempoHolder();
+
+        //not needed anymore
+        //gpsLocationText = (TextView) findViewById(R.id.gpsView);
+       // distanceText = (TextView) findViewById(R.id.distanceView);
+       // markerLocationText = (TextView) findViewById(R.id.markerView);
+
         timePicker = (TimePicker) findViewById(R.id.timePicker);
         timePicker.setIs24HourView(true);
         menuButton = (ImageButton) findViewById(R.id.menuButton);
@@ -89,6 +98,10 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         dialogText = (TextView) findViewById(R.id.dialogText);
         dialogOKButton = (Button) findViewById(R.id.insideDialogButton);
         dialogOKButton.setOnClickListener(this);
+        this.singleton = Singleton.getInstance();
+
+        //Startar trÂden.
+        new Notifications((Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE)).run();
 
         /**
          *  Note Michal Stypa:
@@ -116,12 +129,6 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         arrivalTimeText = (TextView) rightView.findViewById(R.id.arrivalTime);
         distanceText = (TextView) rightView.findViewById(R.id.distance);
         onTimeText = (TextView) rightView.findViewById(R.id.onTime);
-
-        /* Lägger till --- för estetikens skull i högermenyn */
-        addressText.setText(" - - - ");
-        arrivalTimeText.setText(" - - - ");
-        distanceText.setText(" - - - ");
-        onTimeText.setText(" - ");
 
 
         sm.setShadowWidth(15);
@@ -185,79 +192,44 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
 
                 }
             }
-            try {
-                tempoHolder();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            /* Ritar upp pop-up windowet*/
+            if(singleton.getArrive()){
+                dialogLayout.setVisibility(View.VISIBLE);
+                dialogText.setText("Du ‰r nu framme!");
+                singleton.setArrive(false);
+            }
+            else if(singleton.getNeedToGO()){
+                dialogLayout.setVisibility(View.VISIBLE);
+                dialogText.setText("Time to go!");
+                singleton.setNeedToGo(false);
+            }
+            else if(singleton.getyouAreLate()){
+                dialogLayout.setVisibility(View.VISIBLE);
+                dialogText.setText("Du ‰r sen! ÷ka!");
+                singleton.setYouAreLate(false);
             }
 
         }
     };
 
 
-    private void tempoHolder() throws InterruptedException {
 
-        if(haveDestination&& (arriveTimeHours+ arriveTimeMinutes) != 0 ){
-            RoutePlanner routePlanner = new RoutePlanner(gpsLocation, markerLocation, RoutePlanner.MODE_WALKING);
-            drawRoute(routePlanner);
-            //int estimatedArrivalTime = routePlanner.getDurationValue(doc);
-
-
-            //new stuff
-            Date date = new Date();   // given date
-            Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
-            calendar.setTime(date);   // assigns calendar to given date
-            calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
-            calendar.get(Calendar.MINUTE);
-
-            int h = calendar.get(Calendar.HOUR_OF_DAY);
-            int m = calendar.get(Calendar.MINUTE);
-            System.out.println("h: " + h + "m: " + m);
-            int estimatedArrivalTime = h * 3600 + m * 60 + routePlanner.getDurationValue(doc);
-            int currentTime = h * 3600 + m * 60;
-            //end of new stuff
-
-            int estimatedDistanceToTarget = routePlanner.getDistanceValue(doc);
-            int timeYouWantToBeThere = (arriveTimeHours*60 + arriveTimeMinutes) * 60;
-            Log.d("John","EstimatedArrivalTime: "+ estimatedArrivalTime + "TimeToBeThere:  " +timeYouWantToBeThere  );
-            if(estimatedArrivalTime>timeYouWantToBeThere&&!tempoHolder.isVibrating()) {
-                onTimeText.setText("NO");
-                tempoHolder = new TempoHolder();
-                tempoHolder.startVibrate(estimatedDistanceToTarget, estimatedArrivalTime
-                        , (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
-                //Thread t = new Thread(tempoHolder);
-                //t.start();
-                tempoHolder.start();
-                dialogLayout.setVisibility(View.VISIBLE);
-                dialogText.setText("Du är sen! Öka!");
-                //tempoHolder.vibrateTheWakingSpeed(estimatedDistanceToTarget,estimatedArrivalTime
-                //,(Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
-            }else {
-                //tempoHolder = new TempoHolder();
-                onTimeText.setText("YES");
-                tempoHolder.stopVibrate();
-            }
-                if(estimatedArrivalTime < (currentTime + 10)) {
-                    dialogLayout.setVisibility(View.VISIBLE);
-                    dialogText.setText("Du är nu framme!");
-                }
-            }
-
-    }
     private GoogleMap.OnMapLongClickListener myLongClickListener = new GoogleMap.OnMapLongClickListener(){
         @Override
         public void onMapLongClick(LatLng latLng) {
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(latLng));
             markerLocation = latLng;
-           if(markerLocation == null) {
-               System.out.println("\n \n \n \n markerLocation is null");
-           }else if(markerLocation != null){
-               System.out.println("\n \n \n \n markerLocation is not null");
-               RoutePlanner routePlanner = new RoutePlanner(gpsLocation, markerLocation, RoutePlanner.MODE_WALKING);
-               drawRoute(routePlanner);
+            markerLocationText.setText("Marker coord: " + latLng.latitude + " , " + latLng.longitude);
+            if(markerLocation == null) {
+                System.out.println("\n \n \n \n markerLocation is null");
+            }else if(markerLocation != null){
+                System.out.println("\n \n \n \n markerLocation is not null");
+                RoutePlanner routePlanner = new RoutePlanner(gpsLocation, markerLocation, RoutePlanner.MODE_WALKING);
+                singleton.setRoutePlanner(routePlanner);
+                drawRoute(routePlanner);
 
-           }
+            }
 
             timeLayout.setVisibility(View.VISIBLE);
         }
@@ -271,9 +243,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     }
 
     private void drawRoute(RoutePlanner routePlanner){
-        Log.d("John","Det fungerar" );
 
-        System.out.println("hej");
         doc = routePlanner.getDocument();
         haveDestination = true;
         if(doc==null) {
@@ -317,11 +287,13 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         } else if(v == insideTimePickerButton){
             arriveTimeHours = timePicker.getCurrentHour();
             arriveTimeMinutes = timePicker.getCurrentMinute();
+            singleton.setTimeYouWantToBeThere(arriveTimeHours*60+arriveTimeMinutes);
             timeLayout.setVisibility(View.INVISIBLE);
+            markerLocationText.setText("Arrival chosen: " + arriveTimeHours + ":" + arriveTimeMinutes);
 
         } else if(v == dialogOKButton){
             dialogLayout.setVisibility(View.INVISIBLE);
-            //STOPPAR VIBRATIONERNA OM MAN TRYCKER OK PÅ DIALOGRUTAN SOM SÄGER ATT MAN ÄR SEN
+            //STOPPAR VIBRATIONERNA OM MAN TRYCKER OK P≈ DIALOGRUTAN SOM SƒGER ATT MAN ƒR SEN
             tempoHolder.stopVibrate();
         }
         return;
