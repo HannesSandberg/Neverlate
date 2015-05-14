@@ -47,8 +47,6 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private LatLng markerLocation = null;
     private LatLng gpsLocation = null;
-    private TextView gpsLocationText = null;
-    private TextView markerLocationText = null;
     //private TextView distanceText = null;
     private TimePicker timePicker;
     private ImageButton menuButton;
@@ -77,9 +75,6 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
         tempoHolder = new TempoHolder();
-        gpsLocationText = (TextView) findViewById(R.id.gpsView);
-        distanceText = (TextView) findViewById(R.id.distanceView);
-        markerLocationText = (TextView) findViewById(R.id.markerView);
         timePicker = (TimePicker) findViewById(R.id.timePicker);
         timePicker.setIs24HourView(true);
         menuButton = (ImageButton) findViewById(R.id.menuButton);
@@ -94,7 +89,6 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         dialogText = (TextView) findViewById(R.id.dialogText);
         dialogOKButton = (Button) findViewById(R.id.insideDialogButton);
         dialogOKButton.setOnClickListener(this);
-
 
         /**
          *  Note Michal Stypa:
@@ -122,6 +116,12 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         arrivalTimeText = (TextView) rightView.findViewById(R.id.arrivalTime);
         distanceText = (TextView) rightView.findViewById(R.id.distance);
         onTimeText = (TextView) rightView.findViewById(R.id.onTime);
+
+        /* Lägger till --- för estetikens skull i högermenyn */
+        addressText.setText(" - - - ");
+        arrivalTimeText.setText(" - - - ");
+        distanceText.setText(" - - - ");
+        onTimeText.setText(" - ");
 
 
         sm.setShadowWidth(15);
@@ -186,8 +186,6 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                 }
             }
             try {
-
-
                 tempoHolder();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -252,7 +250,6 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(latLng));
             markerLocation = latLng;
-            markerLocationText.setText("Marker coord: " + latLng.latitude + " , " + latLng.longitude);
            if(markerLocation == null) {
                System.out.println("\n \n \n \n markerLocation is null");
            }else if(markerLocation != null){
@@ -321,7 +318,6 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             arriveTimeHours = timePicker.getCurrentHour();
             arriveTimeMinutes = timePicker.getCurrentMinute();
             timeLayout.setVisibility(View.INVISIBLE);
-            markerLocationText.setText("Arrival chosen: " + arriveTimeHours + ":" + arriveTimeMinutes);
 
         } else if(v == dialogOKButton){
             dialogLayout.setVisibility(View.INVISIBLE);
