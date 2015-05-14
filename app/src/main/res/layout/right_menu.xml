@@ -29,7 +29,8 @@
         android:id="@+id/address"
         android:layout_below="@+id/textView"
         android:layout_alignStart="@+id/textView"
-        android:textColor="#3197f5"/>
+        android:textColor="#3197f5"
+        android:layout_marginEnd="24dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -78,15 +79,16 @@
         android:id="@+id/textView7"
         android:layout_below="@+id/distance"
         android:layout_alignStart="@+id/textView5"
-        android:textColor="#ffffff"/>
+        android:textColor="#ffffff"
+        android:layout_marginTop="50dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/onTime"
-        android:layout_alignBottom="@+id/textView7"
-        android:layout_toRightOf="@+id/textView7"
+        android:layout_below="@+id/textView7"
+        android:layout_alignStart="@+id/textView7"
         android:textColor="#3197f5"/>
 
 
