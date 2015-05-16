@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
@@ -54,7 +55,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private ImageButton menuButton;
     private Button insideTimePickerButton;
     private LinearLayout timeLayout;
-    private LinearLayout dialogLayout;
+    private RelativeLayout dialogLayout;
     private int arriveTimeHours;
     private int arriveTimeMinutes;
     private boolean haveDestination = false;
@@ -94,7 +95,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         insideTimePickerButton.setOnClickListener(this);
         timeLayout = (LinearLayout) findViewById(R.id.timeLayout);
         timeLayout.setVisibility(View.INVISIBLE);
-        dialogLayout = (LinearLayout) findViewById(R.id.dialogLayout);
+        dialogLayout = (RelativeLayout) findViewById(R.id.dialogLayout);
         dialogLayout.setVisibility(View.INVISIBLE);
         menuButton.getBackground().setAlpha(210);
         dialogText = (TextView) findViewById(R.id.dialogText);
@@ -135,6 +136,14 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         arrivalTimeText = (TextView) rightView.findViewById(R.id.arrivalTime);
         distanceText = (TextView) rightView.findViewById(R.id.distance);
         onTimeText = (TextView) rightView.findViewById(R.id.onTime);
+
+        //Bara estetiskt
+        addressText.setText(" - - - ");
+        arrivalTimeText.setText(" - - - ");
+        distanceText.setText(" - - - ");
+        onTimeText.setText(" - - - ");
+
+
 
 
         sm.setShadowWidth(15);
