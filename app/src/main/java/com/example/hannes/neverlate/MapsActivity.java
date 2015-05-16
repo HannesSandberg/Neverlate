@@ -41,7 +41,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-//new stuff
 
 public class MapsActivity extends SlidingFragmentActivity implements View.OnClickListener{
 
@@ -73,6 +72,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private Singleton singleton;
     private ToggleButton toggle;
     private String transportMode;
+    private Notifications notificationsThread;
 
     @Override
     //changed from protected to public
@@ -103,8 +103,10 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         this.singleton = Singleton.getInstance();
 
         //Startar trÂden.
-        new Notifications((Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE)).run();
+        //new Notifications((Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE)).run();
 
+        notificationsThread = new Notifications((Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
+        notificationsThread.start();
         /**
          *  Note Michal Stypa:
          *  Strict mode disables the ability to connect to internet on main thread in order to prevent accidental
