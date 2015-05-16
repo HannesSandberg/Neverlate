@@ -49,6 +49,8 @@ public class Notifications extends Thread {
                             singleton.setYouAreLate(true);
                         }
                         //vibrerar
+
+                        /** HÄR FUCKAR DET. inne i trysatsten. Ändrade raden under till i=1 men funkade inte fortfarande.*/
                         int i = 1;
                         while (i < vibrationTimeList.size()) {
                             vibrator.vibrate(vibrationTimeList.get(i));

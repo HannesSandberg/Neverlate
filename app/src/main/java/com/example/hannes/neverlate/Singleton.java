@@ -14,7 +14,7 @@ public class Singleton {
 
 
     }
-    public static Singleton getInstance() {
+    public synchronized static Singleton getInstance() {
         if(singleton == null) {
             singleton = new Singleton();
         }

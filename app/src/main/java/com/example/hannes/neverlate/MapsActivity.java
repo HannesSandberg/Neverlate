@@ -225,7 +225,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(latLng));
             markerLocation = latLng;
-            markerLocationText.setText("Marker coord: " + latLng.latitude + " , " + latLng.longitude);
+
             if(markerLocation == null) {
                 System.out.println("\n \n \n \n markerLocation is null");
             }else if(markerLocation != null){
@@ -302,7 +302,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             arriveTimeMinutes = timePicker.getCurrentMinute();
             singleton.setTimeYouWantToBeThere(arriveTimeHours*60+arriveTimeMinutes);
             timeLayout.setVisibility(View.INVISIBLE);
-            markerLocationText.setText("Arrival chosen: " + arriveTimeHours + ":" + arriveTimeMinutes);
+            //markerLocationText.setText("Arrival chosen: " + arriveTimeHours + ":" + arriveTimeMinutes);
 
         } else if(v == dialogOKButton){
             dialogLayout.setVisibility(View.INVISIBLE);
