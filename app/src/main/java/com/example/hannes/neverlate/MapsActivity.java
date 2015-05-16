@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -74,6 +75,9 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private ToggleButton toggle;
     private String transportMode;
     private Notifications notificationsThread;
+    private Button cancelButton;
+    private ImageButton cancelNavigation;
+    private ImageView more;
 
     @Override
     //changed from protected to public
@@ -102,6 +106,14 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         dialogOKButton = (Button) findViewById(R.id.insideDialogButton);
         dialogOKButton.setOnClickListener(this);
         this.singleton = Singleton.getInstance();
+        cancelButton = (Button) findViewById(R.id.cancelButton);
+        cancelButton.setOnClickListener(this);
+        cancelNavigation = (ImageButton) findViewById(R.id.cancelNavigation);
+        cancelNavigation.setOnClickListener(this);
+        cancelNavigation.setVisibility(View.INVISIBLE);
+        cancelNavigation.getBackground().setAlpha(210);
+        more = (ImageView) findViewById(R.id.more);
+        more.getBackground().setAlpha(210);
 
         //Startar trÂden.
         //new Notifications((Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE)).run();
@@ -210,7 +222,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             /* Ritar upp pop-up windowet*/
             if(singleton.getArrive()){
                 dialogLayout.setVisibility(View.VISIBLE);
-                dialogText.setText("Du ‰r nu framme!");
+                dialogText.setText("You have reached the destination!");
                 singleton.setArrive(false);
             }
             else if(singleton.getNeedToGO()){
@@ -220,7 +232,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             }
             else if(singleton.getyouAreLate()){
                 dialogLayout.setVisibility(View.VISIBLE);
-                dialogText.setText("Du ‰r sen! ÷ka!");
+                dialogText.setText("You are running late! Hurry on!");
                 singleton.setYouAreLate(false);
             }
 
@@ -241,7 +253,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                 System.out.println("\n \n \n \n markerLocation is not null");
                 RoutePlanner routePlanner = new RoutePlanner(gpsLocation, markerLocation, transportMode);
                 singleton.setRoutePlanner(routePlanner);
-                drawRoute(routePlanner);
+                drawRoute(singleton.getRoutePlanner());
 
             }
 
@@ -311,12 +323,19 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             arriveTimeMinutes = timePicker.getCurrentMinute();
             singleton.setTimeYouWantToBeThere(arriveTimeHours*60+arriveTimeMinutes);
             timeLayout.setVisibility(View.INVISIBLE);
+            cancelNavigation.setVisibility(View.VISIBLE);
             //markerLocationText.setText("Arrival chosen: " + arriveTimeHours + ":" + arriveTimeMinutes);
 
         } else if(v == dialogOKButton){
             dialogLayout.setVisibility(View.INVISIBLE);
             //STOPPAR VIBRATIONERNA OM MAN TRYCKER OK P≈ DIALOGRUTAN SOM SƒGER ATT MAN ƒR SEN
             tempoHolder.stopVibrate();
+        } else if(v == cancelButton){
+            singleton.setRoutePlanner(null);
+            timeLayout.setVisibility(View.INVISIBLE);
+        } else if(v == cancelNavigation){
+            singleton.setRoutePlanner(null);
+            cancelNavigation.setVisibility(View.INVISIBLE);
         }
         return;
     }
