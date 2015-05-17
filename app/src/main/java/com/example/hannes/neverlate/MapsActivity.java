@@ -252,7 +252,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                 System.out.println("\n \n \n \n markerLocation is not null");
                 RoutePlanner routePlanner = new RoutePlanner(gpsLocation, markerLocation, transportMode);
                 singleton.setRoutePlanner(routePlanner);
-                drawRoute(singleton.getRoutePlanner());
+                drawRoute(routePlanner);
 
             }
 

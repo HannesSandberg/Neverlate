@@ -34,43 +34,45 @@ public class Notifications extends Thread {
                 this.doc = routePlanner.getDocument();
 
                 // kollar om man ‰r framme
-                if (routePlanner.getDistanceValue(doc) < DISTANCE_UNTIL_ARRIVAL) {
-                    singleton.setArrive(true);
-                    //Tar bort routePlannerna ner vi kommer fram. So att man bara kommer fram en gong po en plan
-                    singleton.setRoutePlanner(null);
-                } else {
+                if(doc != null) {
+                    if (routePlanner.getDistanceValue(doc) < DISTANCE_UNTIL_ARRIVAL) {
+                        singleton.setArrive(true);
+                        //Tar bort routePlannerna ner vi kommer fram. So att man bara kommer fram en gong po en plan
+                        singleton.setRoutePlanner(null);
+                    } else {
 
-                    if (this.getEstimatedArrivalTime() > singleton.getTimeYouWantToBeThere()) {
-                        if (timeYouWantTOBeThere != singleton.getTimeYouWantToBeThere()) {
-                            timeYouWantTOBeThere = singleton.getTimeYouWantToBeThere();
-                            singleton.setNeedToGo(true);
+                        if (this.getEstimatedArrivalTime() > singleton.getTimeYouWantToBeThere()) {
+                            if (timeYouWantTOBeThere != singleton.getTimeYouWantToBeThere()) {
+                                timeYouWantTOBeThere = singleton.getTimeYouWantToBeThere();
+                                singleton.setNeedToGo(true);
+
+                            } else {
+                                singleton.setYouAreLate(true);
+                            }
+                            //vibrerar
+                            int i = 1;
+                            while (i < vibrationTimeList.size()) {
+                                vibrator.vibrate(vibrationTimeList.get(i));
+                                try {
+
+                                    this.sleep(vibrationTimeList.get(i));
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                i++;
+                            }
+                            // slut po vibrartionskoden.
+
 
                         } else {
-                            singleton.setYouAreLate(true);
-                        }
-                        //vibrerar
-                        int i = 1;
-                        while (i < vibrationTimeList.size()) {
-                            vibrator.vibrate(vibrationTimeList.get(i));
                             try {
-
-                                this.sleep(vibrationTimeList.get(i));
+                                this.sleep(100);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            i++;
                         }
-                        // slut po vibrartionskoden.
 
-
-                    } else {
-                        try {
-                            this.sleep(100);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                     }
-
                 }
 
             } else {
