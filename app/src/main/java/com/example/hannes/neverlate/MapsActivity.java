@@ -44,7 +44,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 
-public class MapsActivity extends SlidingFragmentActivity implements View.OnClickListener{
+public class MapsActivity extends SlidingFragmentActivity implements View.OnClickListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private LatLng markerLocation = null;
@@ -61,7 +61,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private int arriveTimeMinutes;
     private boolean haveDestination = false;
     private Document doc;
-    private TempoHolder tempoHolder;
+   // private TempoHolder tempoHolder;
     private TextView addressText;
     private TextView arrivalTimeText;
     private TextView distanceText;
@@ -85,7 +85,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
-        tempoHolder = new TempoHolder();
+        //tempoHolder = new TempoHolder();
 
 
         //Setting default transport mode to walking
@@ -142,7 +142,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         sm.setSecondaryMenu(R.layout.right_menu);
         View rightView = sm.getSecondaryMenu();
         toggle = (ToggleButton) sm.getMenu().findViewById(R.id.toggle); //Toggle button
-
+        toggle.setOnClickListener(toggleClickListener); //Add action listener
 
         addressText = (TextView) rightView.findViewById(R.id.address);
         arrivalTimeText = (TextView) rightView.findViewById(R.id.arrivalTime);
@@ -239,7 +239,6 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         }
     };
 
-
     private GoogleMap.OnMapLongClickListener myLongClickListener = new GoogleMap.OnMapLongClickListener(){
         @Override
         public void onMapLongClick(LatLng latLng) {
@@ -268,6 +267,13 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
 
 
     }
+    private ToggleButton.OnClickListener toggleClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            changeTransportMode();
+        }
+    };
+
 
     private void changeTransportMode(){
         if(transportMode == RoutePlanner.MODE_WALKING){
@@ -329,7 +335,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         } else if(v == dialogOKButton){
             dialogLayout.setVisibility(View.INVISIBLE);
             //STOPPAR VIBRATIONERNA OM MAN TRYCKER OK P≈ DIALOGRUTAN SOM SƒGER ATT MAN ƒR SEN
-            tempoHolder.stopVibrate();
+            //tempoHolder.stopVibrate();
         } else if(v == cancelButton){
             singleton.setRoutePlanner(null);
             timeLayout.setVisibility(View.INVISIBLE);
