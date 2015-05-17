@@ -77,7 +77,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private Notifications notificationsThread;
     private Button cancelButton;
     private ImageButton cancelNavigation;
-    private ImageView more;
+    private ImageButton more;
 
     @Override
     //changed from protected to public
@@ -112,14 +112,15 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         cancelNavigation.setOnClickListener(this);
         cancelNavigation.setVisibility(View.INVISIBLE);
         cancelNavigation.getBackground().setAlpha(210);
-        more = (ImageView) findViewById(R.id.more);
+        more = (ImageButton) findViewById(R.id.more);
         more.getBackground().setAlpha(210);
+        more.setOnClickListener(this);
 
         //Startar trÂden.
         //new Notifications((Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE)).run();
 
         notificationsThread = new Notifications((Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
-        notificationsThread.start();
+        //notificationsThread.start();
         /**
          *  Note Michal Stypa:
          *  Strict mode disables the ability to connect to internet on main thread in order to prevent accidental
@@ -279,13 +280,16 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         if(transportMode == RoutePlanner.MODE_WALKING){
             transportMode = RoutePlanner.MODE_BIKING;
         }else if(transportMode == RoutePlanner.MODE_BIKING){
-            transportMode = RoutePlanner.MODE_BIKING;
+            transportMode = RoutePlanner.MODE_WALKING;
         }
         if(singleton.getRoutePlanner() != null){
+            mMap.clear();
+            mMap.addMarker(new MarkerOptions().position(markerLocation));
             RoutePlanner tempRoutePlaner = new RoutePlanner(gpsLocation, markerLocation, transportMode);
             singleton.setRoutePlanner(tempRoutePlaner);
             drawRoute(tempRoutePlaner);
         }
+
     }
 
     private void drawRoute(RoutePlanner routePlanner){
@@ -342,6 +346,8 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         } else if(v == cancelNavigation){
             singleton.setRoutePlanner(null);
             cancelNavigation.setVisibility(View.INVISIBLE);
+        } else if(v == more){
+            sm.showSecondaryMenu();
         }
         return;
     }
