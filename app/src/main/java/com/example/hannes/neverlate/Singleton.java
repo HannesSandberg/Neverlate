@@ -10,6 +10,7 @@ public class Singleton {
     private boolean needToGo;
     private int timeYouWantTBoeThere = 10000000;
     private RoutePlanner routePlanner;
+    private boolean sleepNotification;
     public Singleton(){
 
 
@@ -64,7 +65,13 @@ public class Singleton {
         this.routePlanner = routePlanner;
 
     }
+    public synchronized void sleepNotification(boolean status){
+        sleepNotification = status;
+    }
+    public synchronized boolean getSleepNotifivationStatus(){
+        return sleepNotification;
 
+    }
 }
 
 

@@ -29,61 +29,70 @@ public class Notifications extends Thread {
 
         ArrayList<Integer> vibrationTimeList = getVibrationTimeList();
         while (true) {
-            routePlanner = singleton.getRoutePlanner();
-            if (routePlanner != null) {
-                this.doc = routePlanner.getDocument();
 
-                // kollar om man ‰r framme
-                if(doc != null) {
-                    if (routePlanner.getDistanceValue(doc) < DISTANCE_UNTIL_ARRIVAL) {
-                        singleton.setArrive(true);
-                        //Tar bort routePlannerna ner vi kommer fram. So att man bara kommer fram en gong po en plan
-                        singleton.setRoutePlanner(null);
-                    } else {
+            if (singleton.getSleepNotifivationStatus() == false) {
+                routePlanner = singleton.getRoutePlanner();
+                if (routePlanner != null) {
+                    this.doc = routePlanner.getDocument();
 
-                        if (this.getEstimatedArrivalTime() > singleton.getTimeYouWantToBeThere()) {
-                            if (timeYouWantTOBeThere != singleton.getTimeYouWantToBeThere()) {
-                                timeYouWantTOBeThere = singleton.getTimeYouWantToBeThere();
-                                singleton.setNeedToGo(true);
+                    // kollar om man ‰r framme
+                    if (doc != null) {
+                        if (routePlanner.getDistanceValue(doc) < DISTANCE_UNTIL_ARRIVAL) {
+                            singleton.setArrive(true);
+                            //Tar bort routePlannerna ner vi kommer fram. So att man bara kommer fram en gong po en plan
+                            singleton.setRoutePlanner(null);
+                        } else {
+
+                            if (this.getEstimatedArrivalTime() > singleton.getTimeYouWantToBeThere()) {
+                                if (timeYouWantTOBeThere != singleton.getTimeYouWantToBeThere()) {
+                                    timeYouWantTOBeThere = singleton.getTimeYouWantToBeThere();
+                                    singleton.setNeedToGo(true);
+
+                                } else {
+                                    singleton.setYouAreLate(true);
+                                }
+                                //vibrerar
+                                int i = 1;
+                                while (i < vibrationTimeList.size()) {
+                                    vibrator.vibrate(vibrationTimeList.get(i - 1));
+                                    i++;
+                                    try {
+
+
+                                        this.sleep(vibrationTimeList.get(i - 1));
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    i++;
+                                }
+                                // slut po vibrartionskoden.
+
 
                             } else {
-                                singleton.setYouAreLate(true);
-                            }
-                            //vibrerar
-                            int i = 1;
-                            while (i < vibrationTimeList.size()) {
-                                vibrator.vibrate(300);
-                                i++;
                                 try {
-
-                                   // this.sleep(vibrationTimeList.get(i));
-                                    this.sleep(400);
+                                    this.sleep(100);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
-                                i++;
                             }
-                            // slut po vibrartionskoden.
 
-
-                        } else {
-                            try {
-                                this.sleep(100);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
                         }
+                    }
 
+                } else {
+                    try {
+                        sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
-
-            } else {
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            } else{
+            try {
+                sleep(30000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+        }
         }
     }
     private int getEstimatedArrivalTime(){
