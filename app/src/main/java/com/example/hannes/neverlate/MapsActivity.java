@@ -85,7 +85,6 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
-        //tempoHolder = new TempoHolder();
 
 
         //Setting default transport mode to walking
@@ -117,10 +116,9 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         more.setOnClickListener(this);
 
         //Startar trÂden.
-        //new Notifications((Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE)).run();
 
         notificationsThread = new Notifications((Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
-        //notificationsThread.start();
+        notificationsThread.start();
         /**
          *  Note Michal Stypa:
          *  Strict mode disables the ability to connect to internet on main thread in order to prevent accidental
@@ -338,8 +336,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
 
         } else if(v == dialogOKButton){
             dialogLayout.setVisibility(View.INVISIBLE);
-            //STOPPAR VIBRATIONERNA OM MAN TRYCKER OK P≈ DIALOGRUTAN SOM SƒGER ATT MAN ƒR SEN
-            //tempoHolder.stopVibrate();
+            //STOPPAR VIBRATIONERNA OM MAN TRYCKER OK P≈ DIALOGRUTAN SOM SƒGER ATT MAN ƒR AV NOTIFICATIONS
         } else if(v == cancelButton){
             singleton.setRoutePlanner(null);
             timeLayout.setVisibility(View.INVISIBLE);

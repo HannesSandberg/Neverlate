@@ -52,10 +52,12 @@ public class Notifications extends Thread {
                             //vibrerar
                             int i = 1;
                             while (i < vibrationTimeList.size()) {
-                                vibrator.vibrate(vibrationTimeList.get(i));
+                                vibrator.vibrate(300);
+                                i++;
                                 try {
 
-                                    this.sleep(vibrationTimeList.get(i));
+                                   // this.sleep(vibrationTimeList.get(i));
+                                    this.sleep(400);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -77,7 +79,7 @@ public class Notifications extends Thread {
 
             } else {
                 try {
-                    sleep(100);
+                    sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -103,18 +105,12 @@ public class Notifications extends Thread {
     /* H‰r best‰mer man hur lÂng tid den ska vibrerar/sova. */
     private ArrayList<Integer> getVibrationTimeList(){
         ArrayList<Integer> list = new ArrayList<Integer>();
-        //vibrerar i 500ms
-        list.add(500);
-        //sover i 10000ms
-        list.add(1000);
 
-        //vibrerar i 700ms
-        list.add(700);
-        //sover i 700ms
+        list.add(400);
         list.add(700);
 
-        list.add(500);
-        list.add(450);
+
+
 
         return list;
 
