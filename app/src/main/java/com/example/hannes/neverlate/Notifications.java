@@ -44,30 +44,30 @@ public class Notifications extends Thread {
                             singleton.setRoutePlanner(null);
                         } else {
 
-                            if (this.getEstimatedArrivalTime() > singleton.getTimeYouWantToBeThere()) {
+                            if (this.getEstimatedArrivalTime()+ 5 > singleton.getTimeYouWantToBeThere()) {
                                 if (timeYouWantTOBeThere != singleton.getTimeYouWantToBeThere()) {
                                     timeYouWantTOBeThere = singleton.getTimeYouWantToBeThere();
                                     singleton.setNeedToGo(true);
 
-                                } else {
+                                } else if(this.getEstimatedArrivalTime() > singleton.getTimeYouWantToBeThere()) {
                                     singleton.setYouAreLate(true);
-                                }
-                                //vibrerar
-                                int i = 1;
-                                while (i < vibrationTimeList.size()) {
-                                    vibrator.vibrate(vibrationTimeList.get(i - 1));
-                                    i++;
-                                    try {
+
+                                    //vibrerar
+                                    int i = 1;
+                                    while (i < vibrationTimeList.size()) {
+                                        vibrator.vibrate(vibrationTimeList.get(i - 1));
+                                        i++;
+                                        try {
 
 
-                                        this.sleep(vibrationTimeList.get(i - 1));
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
+                                            this.sleep(vibrationTimeList.get(i - 1));
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                        i++;
                                     }
-                                    i++;
+                                    // slut po vibrartionskoden.
                                 }
-                                // slut po vibrartionskoden.
-
 
                             } else {
                                 try {
