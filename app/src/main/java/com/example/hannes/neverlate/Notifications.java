@@ -45,7 +45,7 @@ public class Notifications extends Thread {
                         } else {
                                     System.out.println("getEstimatedArrivalTime() "+this.getEstimatedArrivalTime()+ " getTimeYouWantToBeThere "+
                                             singleton.getTimeYouWantToBeThere());
-                            if (this.getEstimatedArrivalTime()+ 300 > singleton.getTimeYouWantToBeThere()) {
+                            if (this.getEstimatedArrivalTime()+ 60 > singleton.getTimeYouWantToBeThere()) {
                                 if (timeYouWantTOBeThere != singleton.getTimeYouWantToBeThere()) {
                                     timeYouWantTOBeThere = singleton.getTimeYouWantToBeThere();
                                     singleton.setNeedToGo(true);
@@ -103,11 +103,9 @@ public class Notifications extends Thread {
     private int getEstimatedArrivalTime(){
 
 
-        Date date = new Date();   // given date
+
         Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
-        calendar.setTime(date);   // assigns calendar to given date
-        calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
-        calendar.get(Calendar.MINUTE);
+
 
         int h = calendar.get(Calendar.HOUR_OF_DAY);
         int m = calendar.get(Calendar.MINUTE);

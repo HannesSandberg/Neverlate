@@ -126,7 +126,7 @@ public class RoutePlanner {
     public String getEndAddress (Document doc) {
         NodeList nl1 = doc.getElementsByTagName("end_address");
         Node node1 = nl1.item(0);
-        Log.i("StartAddress", node1.getTextContent());
+        Log.i("EndAddress", node1.getTextContent());
         return node1.getTextContent();
     }
 

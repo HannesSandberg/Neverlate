@@ -95,12 +95,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Estimated Arrival Time:"
+        android:text="Estimated Arrival Time\nIf You Leave Now:"
         android:id="@+id/chosenTime"
         android:textColor="#ffffff"
         android:layout_below="@+id/textView7"
         android:layout_alignStart="@+id/onTime"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="70dp"
         />
 
     <TextView

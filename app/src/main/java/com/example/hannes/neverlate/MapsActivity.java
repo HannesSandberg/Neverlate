@@ -80,6 +80,8 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private ImageButton more;
     private RoutePlanner rp;
     private TextView estimatedTimeText;
+    private int tempTime = 0;
+
 
 
     @Override
@@ -236,27 +238,38 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             }
 
             /* Ritar upp pop-up windowet*/
-            if(singleton.getArrive()){
-                dialogLayout.setVisibility(View.VISIBLE);
-                dialogText.setText("You have reached the destination!");
-                singleton.setArrive(false);
-                singleton.setYouAreLate(false);
-                singleton.setNeedToGo(false);
+            Calendar calendar = GregorianCalendar.getInstance();
+           int currTimeS = calendar.get(Calendar.SECOND);
+           int currTimeM =  calendar.get(Calendar.MINUTE);
+           int currTimeH = calendar.get(Calendar.HOUR);
+           int currTime = currTimeM*60 +currTimeS + currTimeH*3600;
+            int time = currTime - tempTime ;
+
+            if(time >20&&singleton.getRoutePlanner()!=null) {
+                if (singleton.getArrive()) {
+                    dialogLayout.setVisibility(View.VISIBLE);
+                    dialogText.setText("You have reached the destination!");
+                    singleton.setArrive(false);
+                    singleton.setYouAreLate(false);
+                    singleton.setNeedToGo(false);
+                    tempTime = currTime;
+                } else if (singleton.getNeedToGO()) {
+                    dialogLayout.setVisibility(View.VISIBLE);
+                    dialogText.setText("Time to go!");
+                    singleton.setArrive(false);
+                    singleton.setYouAreLate(false);
+                    singleton.setNeedToGo(false);
+                    tempTime = currTime;
+                } else if (singleton.getyouAreLate()) {
+                    dialogLayout.setVisibility(View.VISIBLE);
+                    dialogText.setText("You are running late! Hurry on!");
+                    singleton.setArrive(false);
+                    singleton.setYouAreLate(false);
+                    singleton.setNeedToGo(false);
+                    tempTime = currTime;
+                }
             }
-            else if(singleton.getNeedToGO()){
-                dialogLayout.setVisibility(View.VISIBLE);
-                dialogText.setText("Time to go in 5 minutes!");
-                singleton.setArrive(false);
-                singleton.setYouAreLate(false);
-                singleton.setNeedToGo(false);
-            }
-            else if(singleton.getyouAreLate()){
-                dialogLayout.setVisibility(View.VISIBLE);
-                dialogText.setText("You are running late! Hurry on!");
-                singleton.setArrive(false);
-                singleton.setYouAreLate(false);
-                singleton.setNeedToGo(false);
-            }
+
             if(singleton.getyouAreLate()){
                 onTimeText.setText("NO");
             }else{
@@ -390,6 +403,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         } else if(v == cancelButton){
             singleton.setRoutePlanner(null);
             timeLayout.setVisibility(View.INVISIBLE);
+            mMap.clear();
         } else if(v == cancelNavigation){
             singleton.setRoutePlanner(null);
             cancelNavigation.setVisibility(View.INVISIBLE);
