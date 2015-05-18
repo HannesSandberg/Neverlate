@@ -31,7 +31,7 @@ public class Notifications extends Thread {
         ArrayList<Integer> vibrationTimeList = getVibrationTimeList();
         while (true) {
 
-            if (singleton.getSleepNotifivationStatus() == false) {
+            if (singleton.getSleepNotifivationTime() == 0) {
                 routePlanner = singleton.getRoutePlanner();
                 if (routePlanner != null) {
                     this.doc = routePlanner.getDocument();
@@ -43,8 +43,9 @@ public class Notifications extends Thread {
                             //Tar bort routePlannerna ner vi kommer fram. So att man bara kommer fram en gong po en plan
                             singleton.setRoutePlanner(null);
                         } else {
-
-                            if (this.getEstimatedArrivalTime()+ 5 > singleton.getTimeYouWantToBeThere()) {
+                                    System.out.println("getEstimatedArrivalTime() "+this.getEstimatedArrivalTime()+ " getTimeYouWantToBeThere "+
+                                            singleton.getTimeYouWantToBeThere());
+                            if (this.getEstimatedArrivalTime()+ 300 > singleton.getTimeYouWantToBeThere()) {
                                 if (timeYouWantTOBeThere != singleton.getTimeYouWantToBeThere()) {
                                     timeYouWantTOBeThere = singleton.getTimeYouWantToBeThere();
                                     singleton.setNeedToGo(true);
@@ -55,12 +56,14 @@ public class Notifications extends Thread {
                                     //vibrerar
                                     int i = 1;
                                     while (i < vibrationTimeList.size()) {
-                                        vibrator.vibrate(vibrationTimeList.get(i - 1));
+                                      //  vibrator.vibrate(vibrationTimeList.get(i - 1));
+                                        vibrator.vibrate(400);
                                         i++;
                                         try {
 
 
-                                            this.sleep(vibrationTimeList.get(i - 1));
+                                        //    this.sleep(vibrationTimeList.get(i - 1));
+                                            this.sleep(300);
                                         } catch (InterruptedException e) {
                                             e.printStackTrace();
                                         }
@@ -71,7 +74,7 @@ public class Notifications extends Thread {
 
                             } else {
                                 try {
-                                    this.sleep(100);
+                                    this.sleep(5000);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -82,14 +85,15 @@ public class Notifications extends Thread {
 
                 } else {
                     try {
-                        sleep(500);
+                        sleep(5000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
             } else{
             try {
-                sleep(TIME_NOTIFICATIONS_SLEEPS);
+                sleep(singleton.getSleepNotifivationTime());
+                singleton.sleepNotification(0);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

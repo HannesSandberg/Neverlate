@@ -78,6 +78,9 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private Button cancelButton;
     private ImageButton cancelNavigation;
     private ImageButton more;
+    private RoutePlanner rp;
+    private TextView estimatedTimeText;
+
 
     @Override
     //changed from protected to public
@@ -85,6 +88,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+        //tempoHolder = new TempoHolder();
 
 
         //Setting default transport mode to walking
@@ -115,7 +119,10 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         more.getBackground().setAlpha(210);
         more.setOnClickListener(this);
 
+
+
         //Startar trÂden.
+        //new Notifications((Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE)).run();
 
         notificationsThread = new Notifications((Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
         notificationsThread.start();
@@ -143,14 +150,15 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         toggle = (ToggleButton) sm.getMenu().findViewById(R.id.toggle); //Toggle button
         toggle.setOnClickListener(toggleClickListener); //Add action listener
 
-        addressText = (TextView) rightView.findViewById(R.id.address);
         arrivalTimeText = (TextView) rightView.findViewById(R.id.arrivalTime);
+        addressText = (TextView) rightView.findViewById(R.id.address);
+        estimatedTimeText = (TextView) rightView.findViewById(R.id.chosenTimeText);
         distanceText = (TextView) rightView.findViewById(R.id.distance);
         onTimeText = (TextView) rightView.findViewById(R.id.onTime);
 
         //Bara estetiskt
         addressText.setText(" - - - ");
-        arrivalTimeText.setText(" - - - ");
+        estimatedTimeText.setText(" - - - ");
         distanceText.setText(" - - - ");
         onTimeText.setText(" - - - ");
 
@@ -218,21 +226,47 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
 
                 }
             }
+
+            System.out.println();
+
+            //Draw new route
+            if(markerLocation != null){
+            rp = new RoutePlanner(gpsLocation, markerLocation,transportMode);
+            drawRoute(rp);
+            }
+
             /* Ritar upp pop-up windowet*/
             if(singleton.getArrive()){
                 dialogLayout.setVisibility(View.VISIBLE);
                 dialogText.setText("You have reached the destination!");
                 singleton.setArrive(false);
+                singleton.setYouAreLate(false);
+                singleton.setNeedToGo(false);
             }
             else if(singleton.getNeedToGO()){
                 dialogLayout.setVisibility(View.VISIBLE);
-                dialogText.setText("Time to go!");
+                dialogText.setText("Time to go in 5 minutes!");
+                singleton.setArrive(false);
+                singleton.setYouAreLate(false);
                 singleton.setNeedToGo(false);
             }
             else if(singleton.getyouAreLate()){
                 dialogLayout.setVisibility(View.VISIBLE);
                 dialogText.setText("You are running late! Hurry on!");
+                singleton.setArrive(false);
                 singleton.setYouAreLate(false);
+                singleton.setNeedToGo(false);
+            }
+            if(singleton.getyouAreLate()){
+                onTimeText.setText("NO");
+            }else{
+                onTimeText.setText("YES");
+            }
+
+            if(doc != null) {
+                addressText.setText(rp.getEndAddress(doc));
+                estimatedTimeText.setText(rp.getArrivalTime(doc));
+                distanceText.setText(rp.getDistanceText(doc));
             }
 
         }
@@ -249,9 +283,9 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                 System.out.println("\n \n \n \n markerLocation is null");
             }else if(markerLocation != null){
                 System.out.println("\n \n \n \n markerLocation is not null");
-                RoutePlanner routePlanner = new RoutePlanner(gpsLocation, markerLocation, transportMode);
-                singleton.setRoutePlanner(routePlanner);
-                drawRoute(routePlanner);
+                rp = new RoutePlanner(gpsLocation, markerLocation, transportMode);
+                singleton.setRoutePlanner(new RoutePlanner(gpsLocation, markerLocation, transportMode));
+                drawRoute(rp);
 
             }
 
@@ -284,7 +318,8 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(markerLocation));
             RoutePlanner tempRoutePlaner = new RoutePlanner(gpsLocation, markerLocation, transportMode);
-            singleton.setRoutePlanner(tempRoutePlaner);
+            rp = tempRoutePlaner;
+            singleton.setRoutePlanner(new RoutePlanner(gpsLocation, markerLocation, transportMode));
             drawRoute(tempRoutePlaner);
         }
 
@@ -311,8 +346,9 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         //set menu labels
 
 
+
         addressText.setText(routePlanner.getEndAddress(doc));
-        arrivalTimeText.setText(routePlanner.getArrivalTime(doc));
+        estimatedTimeText.setText(routePlanner.getArrivalTime(doc));
         distanceText.setText(routePlanner.getDistanceText(doc));
     }
 
@@ -329,20 +365,35 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         } else if(v == insideTimePickerButton){
             arriveTimeHours = timePicker.getCurrentHour();
             arriveTimeMinutes = timePicker.getCurrentMinute();
-            singleton.setTimeYouWantToBeThere(arriveTimeHours*60+arriveTimeMinutes);
+            singleton.setTimeYouWantToBeThere(arriveTimeHours*3600+arriveTimeMinutes*60);
             timeLayout.setVisibility(View.INVISIBLE);
             cancelNavigation.setVisibility(View.VISIBLE);
+
+            arrivalTimeText.setText(arriveTimeHours + ":" + arriveTimeMinutes);
             //markerLocationText.setText("Arrival chosen: " + arriveTimeHours + ":" + arriveTimeMinutes);
 
         } else if(v == dialogOKButton){
             dialogLayout.setVisibility(View.INVISIBLE);
-            //STOPPAR VIBRATIONERNA OM MAN TRYCKER OK P≈ DIALOGRUTAN SOM SƒGER ATT MAN ƒR AV NOTIFICATIONS
+            //STOPPAR VIBRATIONERNA OM MAN TRYCKER OK P≈ DIALOGRUTAN SOM SƒGER ATT MAN ƒR SEN
+            if(dialogText.getText().toString().contains("Time to go")) {
+                singleton.sleepNotification(30000);
+                singleton.setYouAreLate(false);
+                singleton.setNeedToGo(false);
+
+            }
+
+            else if(dialogText.getText().toString().contains("You are running late")){
+                    singleton.sleepNotification(30000);
+                    singleton.setYouAreLate(false);
+                    singleton.setNeedToGo(false);
+            }
         } else if(v == cancelButton){
             singleton.setRoutePlanner(null);
             timeLayout.setVisibility(View.INVISIBLE);
         } else if(v == cancelNavigation){
             singleton.setRoutePlanner(null);
             cancelNavigation.setVisibility(View.INVISIBLE);
+            mMap.clear();
         } else if(v == more){
             sm.showSecondaryMenu();
         }
