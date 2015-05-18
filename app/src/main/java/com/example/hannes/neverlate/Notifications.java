@@ -18,6 +18,7 @@ public class Notifications extends Thread {
     private Singleton singleton;
     private Vibrator vibrator;
     private final static int DISTANCE_UNTIL_ARRIVAL = 30;
+    private final static int TIME_NOTIFICATIONS_SLEEPS = 30000;
     public  Notifications( Vibrator vibrator)  {
 
         this.vibrator= vibrator;
@@ -88,7 +89,7 @@ public class Notifications extends Thread {
                 }
             } else{
             try {
-                sleep(30000);
+                sleep(TIME_NOTIFICATIONS_SLEEPS);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
