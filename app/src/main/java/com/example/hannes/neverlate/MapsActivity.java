@@ -3,6 +3,7 @@ package com.example.hannes.neverlate;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.os.Vibrator;
@@ -81,6 +82,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     private RoutePlanner rp;
     private TextView estimatedTimeText;
     private int tempTime = 0;
+    private MediaPlayer mp1, mp2, mp3;
 
 
 
@@ -128,6 +130,13 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
 
         notificationsThread = new Notifications((Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE));
         notificationsThread.start();
+
+        mp1 = MediaPlayer.create(getApplicationContext(), R.raw.leave );
+        mp2 = MediaPlayer.create(getApplicationContext(), R.raw.reached );
+        mp3 = MediaPlayer.create(getApplicationContext(), R.raw.you_are_late );
+
+
+
         /**
          *  Note Michal Stypa:
          *  Strict mode disables the ability to connect to internet on main thread in order to prevent accidental
@@ -219,7 +228,6 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         @Override
         public void onMyLocationChange(Location location) {
             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-            //gpsLocationText.setText("GPS coord: " + loc.latitude + " , " + loc.longitude);
             gpsLocation = loc;
             if(mMap != null){
                 float zoom = mMap.getCameraPosition().zoom;
@@ -228,9 +236,6 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
 
                 }
             }
-
-            System.out.println();
-
             //Draw new route
             if(markerLocation != null){
             rp = new RoutePlanner(gpsLocation, markerLocation,transportMode);
@@ -238,12 +243,12 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             }
 
             /* Ritar upp pop-up windowet*/
-            Calendar calendar = GregorianCalendar.getInstance();
+           Calendar calendar = GregorianCalendar.getInstance();
            int currTimeS = calendar.get(Calendar.SECOND);
            int currTimeM =  calendar.get(Calendar.MINUTE);
            int currTimeH = calendar.get(Calendar.HOUR);
            int currTime = currTimeM*60 +currTimeS + currTimeH*3600;
-            int time = currTime - tempTime ;
+           int time = currTime - tempTime ;
 
             if(time >20&&singleton.getRoutePlanner()!=null) {
                 if (singleton.getArrive()) {
@@ -253,6 +258,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                     singleton.setYouAreLate(false);
                     singleton.setNeedToGo(false);
                     tempTime = currTime;
+                    mp2.start();
                 } else if (singleton.getNeedToGO()) {
                     dialogLayout.setVisibility(View.VISIBLE);
                     dialogText.setText("Time to go!");
@@ -260,6 +266,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                     singleton.setYouAreLate(false);
                     singleton.setNeedToGo(false);
                     tempTime = currTime;
+                    mp1.start();
                 } else if (singleton.getyouAreLate()) {
                     dialogLayout.setVisibility(View.VISIBLE);
                     dialogText.setText("You are running late! Hurry on!");
@@ -267,6 +274,7 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                     singleton.setYouAreLate(false);
                     singleton.setNeedToGo(false);
                     tempTime = currTime;
+                    mp3.start();
                 }
             }
 
@@ -339,7 +347,6 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
     }
 
     private void drawRoute(RoutePlanner routePlanner){
-
         doc = routePlanner.getDocument();
         haveDestination = true;
         if(doc==null) {
@@ -348,17 +355,10 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         ArrayList<LatLng> directionPoint = routePlanner.getDirection(doc);
         PolylineOptions rectLine = new PolylineOptions().width(5).color(
                 Color.RED);
-
         for (int i = 0; i < directionPoint.size(); i++) {
             rectLine.add(directionPoint.get(i));
         }
         Polyline polylin = mMap.addPolyline(rectLine);
-
-        //distanceText.setText("Distance to target: " + routePlanner.getDistanceText(doc));
-        //gpsLocationText.setText(routePlanner.getArrivalTime(doc));
-        //set menu labels
-
-
 
         addressText.setText(routePlanner.getEndAddress(doc));
         estimatedTimeText.setText(routePlanner.getArrivalTime(doc));
@@ -381,9 +381,10 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
             singleton.setTimeYouWantToBeThere(arriveTimeHours*3600+arriveTimeMinutes*60);
             timeLayout.setVisibility(View.INVISIBLE);
             cancelNavigation.setVisibility(View.VISIBLE);
-
             arrivalTimeText.setText(arriveTimeHours + ":" + arriveTimeMinutes);
-            //markerLocationText.setText("Arrival chosen: " + arriveTimeHours + ":" + arriveTimeMinutes);
+            Calendar calendar = GregorianCalendar.getInstance();
+            timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
+            timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
 
         } else if(v == dialogOKButton){
             dialogLayout.setVisibility(View.INVISIBLE);
@@ -392,7 +393,6 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
                 singleton.sleepNotification(30000);
                 singleton.setYouAreLate(false);
                 singleton.setNeedToGo(false);
-
             }
 
             else if(dialogText.getText().toString().contains("You are running late")){
@@ -457,5 +457,13 @@ public class MapsActivity extends SlidingFragmentActivity implements View.OnClic
         public int getCount(){
             return mFragments.size();
         }
+    }
+
+    private String checkZero(String time){
+        //Kolla nollor
+        if(time.length() == 3){
+
+        }
+        return time;
     }
 }
